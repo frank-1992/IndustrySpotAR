@@ -1,0 +1,64 @@
+/* 
+  Localizable.strings
+  IndustryAR
+
+  Created by 吴熠 on 3/1/23.
+  
+*/
+
+"project" = "プロジェクト";
+"history" = "履歴ファイル";
+"mine" = "私の";
+
+"drawing" = "フリーハンド";
+"triangle" = "三角形";
+"square" = "四角形";
+"circle" = "円";
+"text" = "テキスト";
+"insert_occlusion" = "オクルージョン復元";
+"remove_occlusion" = "オクルージョン";
+"photo_backgroud" = "背景撮影";
+"remove_backgroud" = "背景除去";
+"transparent" = "透明";
+"opaque" = "不透明";
+"delete" = "削除";
+"setting" = "設定";
+"marker" = "マーク表示";
+"none_marker" = "マーク非表示";
+"calibration" = "カメラキャリブレーション";
+
+"enter_text" = "文字列を入力してください";
+"cancel" = "キャンセル";
+"confirm" = "確認";
+
+"line_color" = "線色:";
+"line_thickness" = "線幅:";
+"line_type" = "線種:";
+"marker_size" = "マーカサイズ:";
+"text_color" = "文字の色:";
+"text_size" = "文字サイズ:";
+"text_font" = "文字フォント:";
+"tracking_information" = "追跡情報";
+"normal_line" = "実線";
+"dash_line" = "破線";
+
+"model_visible" = "VRモデル表示";
+
+"save_success" = "正常に保存しました";
+"save_fail" = "保存に失敗しました";
+"save_error" = "ビデオを保存できませんでした";
+"save_window_tip" = "シーンを保存しますか？";
+"save" = "保存";
+"save_cover_tip" = "シーンを上書き保存しますか?";
+
+"download_url" = "ダウンロードリンク:";
+"download" = "ダウンロード";
+
+"download_success" = "ダウンロードに成功しました";
+"download_fail" = "ダウンロードに失敗しました";
+"error" = "エラー";
+
+"decompression" = "解凍成功";
+"decompression_fail" = "解凍失敗";
+
+"file_password" = "ファイルパスワード:";

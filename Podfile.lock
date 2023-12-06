@@ -1,0 +1,44 @@
+PODS:
+  - ARVideoKit (1.5.51)
+  - HandyJSON (5.0.2)
+  - MJRefresh (3.7.6)
+  - PKHUD (5.3.0)
+  - Popover (1.3.0)
+  - ProgressHUD (14.1.0)
+  - SnapKit (5.6.0)
+  - Zip (2.1.2)
+
+DEPENDENCIES:
+  - ARVideoKit (~> 1.5.51)
+  - HandyJSON
+  - MJRefresh
+  - PKHUD (~> 5.0)
+  - Popover
+  - ProgressHUD
+  - SnapKit
+  - Zip (~> 2.1)
+
+SPEC REPOS:
+  trunk:
+    - ARVideoKit
+    - HandyJSON
+    - MJRefresh
+    - PKHUD
+    - Popover
+    - ProgressHUD
+    - SnapKit
+    - Zip
+
+SPEC CHECKSUMS:
+  ARVideoKit: cd70e1e49e042ed4a88fb59964c17520e34f7f5b
+  HandyJSON: 9e4e236f5d2dbefad5155a77417bbea438201c03
+  MJRefresh: 2fe7fb43a5167ceda20bb7e63f130c04fd1814a5
+  PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  Popover: 10e1d9528f81d9504df984b7b3f491292bc1822d
+  ProgressHUD: c4a55f108815c46a6bf082407d2f806840b7a869
+  SnapKit: e01d52ebb8ddbc333eefe2132acf85c8227d9c25
+  Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
+
+PODFILE CHECKSUM: 26c7ddad4ffb5f8f1e2e7c804ce77781f4083e70
+
+COCOAPODS: 1.11.3

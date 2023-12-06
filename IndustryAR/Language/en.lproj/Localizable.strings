@@ -1,0 +1,64 @@
+/*
+  Localizable.strings
+  IndustryAR
+
+  Created by 吴熠 on 3/1/23.
+  
+*/
+
+"project" = "Project";
+"history" = "Histoty";
+"mine" = "Mine";
+
+"drawing" = "Draw";
+"triangle" = "Triangle";
+"square" = "Square";
+"circle" = "Circle";
+"text" = "Text";
+"insert_occlusion" = "Insert Occlusion";
+"remove_occlusion" = "Remove Occlusion";
+"photo_backgroud" = "Background Photography";
+"remove_backgroud" = "Background Removal";
+"transparent" = "Transparent";
+"opaque" = "Opaque";
+"delete" = "Delete";
+"setting" = "Setting";
+"marker" = "Display Marker";
+"none_marker" = "Hide Marker";
+"calibration" = "Camera Calibration";
+
+"enter_text" = "Please enter text";
+"cancel" = "Cancel";
+"confirm" = "OK";
+
+"line_color" = "Line Color:";
+"line_thickness" = "Line Thickness:";
+"line_type" = "Line Type:";
+"marker_size" = "Marker Size:";
+"text_color" = "Text Color:";
+"text_size" = "Text Size:";
+"text_font" = "Text Font:";
+"tracking_information" = "Tracking Information";
+"normal_line" = "solid line";
+"dash_line" = "dash line";
+
+"model_visible" = "Show VR Model";
+
+"save_success" = "File saved successfully";
+"save_fail" = "Failed to save　file";
+"save_error" = "The Video Can Not Be Saved";
+"save_window_tip" = "Do you want to save the Scene?";
+"save" = "Save";
+"save_cover_tip" = "Overwrite Save Scene?";
+
+"download_url" = "Download URL:";
+"download" = "Download";
+
+"download_success" = "Download successfully";
+"download_fail" = "Download failed";
+"error" = "Error";
+
+"decompression" = "Decompression complete";
+"decompression_fail" = "Decompression Failed";
+
+"file_password" = "File Password:";
