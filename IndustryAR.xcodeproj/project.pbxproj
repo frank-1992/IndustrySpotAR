@@ -147,6 +147,8 @@
 		F033BCA429A7A80A00625BAC /* SCNTextNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA329A7A80A00625BAC /* SCNTextNode.swift */; };
 		F033BCA629A7BDA100625BAC /* SCNNode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA529A7BDA100625BAC /* SCNNode+Extensions.swift */; };
 		F033BCA829AB23E400625BAC /* HistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA729AB23E400625BAC /* HistoryModel.swift */; };
+		F0B65C732B466C57005860EA /* ARSpotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C722B466C57005860EA /* ARSpotModel.swift */; };
+		F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -305,6 +307,8 @@
 		F033BCA329A7A80A00625BAC /* SCNTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNTextNode.swift; sourceTree = "<group>"; };
 		F033BCA529A7BDA100625BAC /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
 		F033BCA729AB23E400625BAC /* HistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryModel.swift; sourceTree = "<group>"; };
+		F0B65C722B466C57005860EA /* ARSpotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSpotModel.swift; sourceTree = "<group>"; };
+		F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotFactoryTool.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -439,6 +443,7 @@
 				CEC519AE297A74170054AD3A /* FileModel.swift */,
 				F033BCA729AB23E400625BAC /* HistoryModel.swift */,
 				05199E3D2B0F2E1300A0B81C /* SpotWeld.swift */,
+				F0B65C722B466C57005860EA /* ARSpotModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -478,6 +483,7 @@
 				F033BC7B299FE93D00625BAC /* JsonUtil.swift */,
 				CECCE93B296833D90098B299 /* ARUtilities.swift */,
 				CE53166A298E72C70069CC7F /* UserDefaults+Extension.swift */,
+				F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -982,6 +988,7 @@
 				F033BC28299BD06600625BAC /* Updater.swift in Sources */,
 				CEDF542629AC718F00C5AC95 /* HistoryProjectListController.swift in Sources */,
 				05A2E19E29B97534003ED74B /* SCNGeometry+Extension.swift in Sources */,
+				F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */,
 				F033BC1A299BD06600625BAC /* VideoOutput.Error.swift in Sources */,
 				CEC519AF297A74170054AD3A /* FileModel.swift in Sources */,
 				052EAC8F29F4147200E9A625 /* Font+Extensions.swift in Sources */,
@@ -1040,6 +1047,7 @@
 				CECCE9322968197D0098B299 /* AssetModel.swift in Sources */,
 				CE509C98298E32410081346C /* SphereNodesManager.swift in Sources */,
 				F033BC7C299FE93D00625BAC /* JsonUtil.swift in Sources */,
+				F0B65C732B466C57005860EA /* ARSpotModel.swift in Sources */,
 				CECCCEFD296817800098B299 /* ARFileManager.swift in Sources */,
 				F033BBFB299BD06600625BAC /* MetalTexturePoolFactory.swift in Sources */,
 				F033BBFC299BD06600625BAC /* MetalPixelBufferProducer.swift in Sources */,

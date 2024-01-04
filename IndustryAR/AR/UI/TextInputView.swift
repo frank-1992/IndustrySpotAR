@@ -84,7 +84,7 @@ class TextInputView: UIView {
                 confirmTextClosure(content)
             }
         }
-        self.removeFromSuperview()
+        self.isHidden = true
     }
     
     @objc
@@ -92,6 +92,6 @@ class TextInputView: UIView {
         if let cancelClosure = cancelClosure {
             cancelClosure()
         }
-        self.removeFromSuperview()
+        self.isHidden = true
     }
 }

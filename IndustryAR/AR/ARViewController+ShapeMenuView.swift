@@ -15,7 +15,10 @@ extension ARViewController {
         shapeMenuView.deselectShapeTypeClosure = { [weak self] function in
             guard let self = self else { return }
             self.function = function
-            
+            if !textInputView.isHidden {
+                textInputView.isHidden = true
+                self.sceneView.endEditing(true)
+            }
             showFunctionName()
             
             self.setDeleteFlagHiddenState(isHidden: true, completion: nil)
@@ -76,14 +79,15 @@ extension ARViewController {
             }
             
             if function == .text {
-                let textInputView = TextInputView(frame: .zero)
-                self.view.addSubview(textInputView)
-                
-                textInputView.snp.makeConstraints { make in
-                    make.center.equalTo(self.view)
-                    make.size.equalTo(CGSize(width: 300, height: 140))
-                }
-                
+                textInputView.isHidden = !textInputView.isHidden
+//                let textInputView = TextInputView(frame: .zero)
+//                self.view.addSubview(textInputView)
+//                
+//                textInputView.snp.makeConstraints { make in
+//                    make.center.equalTo(self.view)
+//                    make.size.equalTo(CGSize(width: 300, height: 140))
+//                }
+//                
                 textInputView.confirmTextClosure = { content in
                     let text = SCNText(string: content, extrusionDepth: 0.001)
                     text.font = UIFont(name: "PingFang-SC-Regular", size: ShapeSetting.fontSize)
@@ -418,7 +422,7 @@ extension ARViewController {
         if sender.tag == 100 {
             sender.tag = 101
             UIView.animate(withDuration: 0.3) {
-                // sender.transform = CGAffineTransform(translationX: -300, y: 0)
+//                 sender.transform = CGAffineTransform(translationX: -300, y: 0)
                 sender.frame = CGRect(x: sender.frame.origin.x - 300, y: sender.frame.origin.y, width: sender.frame.width, height: sender.frame.height)
                 self.shapeMenuView.transform = CGAffineTransform(translationX: -300, y: 0)
                 /*
@@ -432,7 +436,7 @@ extension ARViewController {
         } else {
             sender.tag = 100
             UIView.animate(withDuration: 0.3) {
-                //sender.transform = CGAffineTransformIdentity
+//                sender.transform = CGAffineTransformIdentity
                 sender.frame = CGRect(x: sender.frame.origin.x + 300, y: sender.frame.origin.y, width: sender.frame.width, height: sender.frame.height)
                 self.shapeMenuView.transform = CGAffineTransformIdentity
             } completion: { _ in

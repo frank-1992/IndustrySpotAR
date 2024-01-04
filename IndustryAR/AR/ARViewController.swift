@@ -162,6 +162,12 @@ class ARViewController: UIViewController {
         return button
     }()
     
+    lazy var textInputView: TextInputView = {
+        let textInputView = TextInputView(frame: .zero)
+        textInputView.isHidden = true
+        return textInputView
+    }()
+    
     lazy var shapeMenuView: ShapeMenuView = {
         let view = ShapeMenuView(frame: .zero)
         view.backgroundColor = .clear
@@ -502,6 +508,13 @@ class ARViewController: UIViewController {
             make.size.equalTo(CGSize(width: 300, height: 650))
         }
         
+        sceneView.addSubview(textInputView)
+        textInputView.snp.makeConstraints { make in
+            make.center.equalTo(self.sceneView)
+            make.size.equalTo(CGSize(width: 300, height: 140))
+        }
+        
+        
         sceneView.addSubview(bottomMenuButton)
         bottomMenuButton.snp.makeConstraints { make in
             make.bottom.equalTo(sceneView.safeAreaLayoutGuide).offset(-20)
@@ -809,7 +822,7 @@ class ARViewController: UIViewController {
                             let weldNormal = spotDictionary? ["WeldNormal"] as? Array<Double>
                             let partNumbers = spotDictionary? ["PartNumbers"] as? Array<String>
                             
-                            var spotWeld:SpotWeld = SpotWeld()
+                            let spotWeld: SpotWeld = SpotWeld()
                             
                             spotWeld.labelNo = labelNo!;
                             
