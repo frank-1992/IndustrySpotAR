@@ -251,6 +251,15 @@ class ARViewController: UIViewController {
     // SCNNode-----Line
     var lineNodes: [SCNLineNode] = [SCNLineNode]()
     
+    // spotLabelNodes
+    var spotLabelNodes: [SCNNode] = [SCNNode]()
+    
+    // spotflag cylinderNodes
+    var spotFlagNodes: [SCNNode] = [SCNNode]()
+    
+    // uninspected ringNodes
+    var ringNodes: [SCNNode] = [SCNNode]()
+    
     var removedOcclusion: Bool = true
     
 //    var removedBackground: Bool = false
@@ -847,6 +856,9 @@ class ARViewController: UIViewController {
                             spotWeldList.append(spotWeld)
                         }
                     }
+                }
+                if UserDefaults.isLabelDisplay {
+                    self.showSpotLabels()
                 }
             }
             

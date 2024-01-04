@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import PKHUD
+import SceneKit
 
 extension ARViewController {
     func setupBottomMenuView() {
@@ -94,9 +95,14 @@ extension ARViewController {
             if !UserDefaults.isLabelDisplay {
                 UserDefaults.isLabelDisplay = true
                 sender.setBackgroundImage(UIImage(named: "biaoqianOff"), for: .normal)
+                // 展示标签
+                self.showSpotLabels()
+                
             } else {
                 UserDefaults.isLabelDisplay = false
                 sender.setBackgroundImage(UIImage(named: "biaoqian"), for: .normal)
+                // 隐藏标签
+                self.hideSpotLabels()
             }
         }
         
@@ -256,6 +262,66 @@ extension ARViewController {
                 self.saveTheScene(with: fileName, dirURL: dirURL, needBack: needBack)
                 textInputView.removeFromSuperview()
             }
+        }
+    }
+    
+    func showSpotLabels() {
+        // SpotWeld
+        if spotLabelNodes.isEmpty {
+            let spotModels = spotWeldList
+            for spotModel in spotModels {
+                let number = spotModel.labelNo
+                let position = spotModel.weldPoint
+                let constraint = SCNBillboardConstraint()
+                constraint.freeAxes = SCNBillboardAxis.all
+                let labelNode = SCNLabelNode(text: "\(number)", checkingStatus: spotModel.status)
+                labelNode.constraints = [constraint]
+                labelNode.position = SCNVector3(x: position.x, y: position.y + 0.05, z: position.z)//position
+                labelNode.renderingOrder = 100
+                markerRoot?.addChildNode(labelNode)
+                spotLabelNodes.append(labelNode)
+                
+//                let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
+//                flagNode.position = SCNVector3(x: position.x, y: position.y, z: position.z)
+//                flagNode.renderingOrder = 100
+//                markerRoot?.addChildNode(flagNode)
+//                spotFlagNodes.append(flagNode)
+                
+                if CheckingStatus(rawValue: spotModel.status) == .unInspected {
+                    let ringNode = SCNRingNode()
+                    ringNode.position = position
+                    markerRoot?.addChildNode(ringNode)
+                    ringNodes.append(ringNode)
+                } else {
+                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
+                    flagNode.position = position
+                    flagNode.renderingOrder = 100
+                    markerRoot?.addChildNode(flagNode)
+                    spotFlagNodes.append(flagNode)
+                }
+            }
+        } else {
+            for spotLabelNode in self.spotLabelNodes {
+                spotLabelNode.isHidden = false
+            }
+            for spotFlagNode in self.spotFlagNodes {
+                spotFlagNode.isHidden = false
+            }
+            for ringNode in self.ringNodes {
+                ringNode.isHidden = false
+            }
+        }
+    }
+    
+    func hideSpotLabels() {
+        for spotLabelNode in self.spotLabelNodes {
+            spotLabelNode.isHidden = true
+        }
+        for spotFlagNode in self.spotFlagNodes {
+            spotFlagNode.isHidden = true
+        }
+        for ringNode in self.ringNodes {
+            ringNode.isHidden = true
         }
     }
 }

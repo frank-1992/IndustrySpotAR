@@ -53,6 +53,23 @@ extension ARViewController {
         sceneView.addGestureRecognizer(panTranslationRecognizer!)
         //-------------------- add camera control to the scene -----------------------End
         
+        let pressGesture = UILongPressGestureRecognizer(target: self, action: #selector(selectSpotLabel(sender:)))
+        sceneView.addGestureRecognizer(pressGesture)
+    }
+    
+    @objc
+    private func selectSpotLabel(sender: UILongPressGestureRecognizer) {
+        let location = sender.location(in: sceneView)
+        guard let hitResult = sceneView.hitTest(location, options: [SCNHitTestOption.searchMode: SCNHitTestSearchMode.closest.rawValue as NSNumber]).first else { return }
+        
+        if sender.state == .began {
+            let tapNode = hitResult.node
+            if let spotLabelNode = tapNode.parent as? SCNLabelNode,
+               let tapNodeName = tapNode.name,
+               tapNodeName.contains("spotLabelPanel") {
+                spotLabelNode.setSelected()
+            }
+        }
     }
     
     // test geometry surface

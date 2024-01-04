@@ -60,7 +60,11 @@ class BottomMenuView: UIView {
     
     lazy var labelDisplayHideButton: UIButton = {
         let button = UIButton()
-        button.setBackgroundImage(UIImage(named: "biaoqian"), for: .normal)
+        if !UserDefaults.isLabelDisplay {
+            button.setBackgroundImage(UIImage(named: "biaoqian"), for: .normal)
+        } else {
+            button.setBackgroundImage(UIImage(named: "biaoqianOff"), for: .normal)
+        }
         button.addTarget(self, action: #selector(labelDisplayHide(sender:)), for: .touchUpInside)
         return button
     }()

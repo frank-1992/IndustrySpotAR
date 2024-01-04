@@ -101,12 +101,16 @@ extension ARViewController {
                     self.shapeMenuView.resetUI()
                     
                     self.showFunctionName()
+                    
+                    self.sceneView.endEditing(true)
                 }
                 
                 textInputView.cancelClosure = {
                     self.shapeMenuView.resetUI()
                     
                     self.showFunctionName()
+                    
+                    self.sceneView.endEditing(true)
                 }
             }
             
