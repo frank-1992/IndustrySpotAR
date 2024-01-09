@@ -110,6 +110,7 @@ extension ARViewController {
         bottomMenuView.inspectClosure = { [weak self]  in
             guard let self = self else { return }
             //self.inspect()
+            self.inspectAction()
         }
         
         // inspect summary
@@ -274,31 +275,34 @@ extension ARViewController {
                 let position = spotModel.weldPoint
                 let constraint = SCNBillboardConstraint()
                 constraint.freeAxes = SCNBillboardAxis.all
-                let labelNode = SCNLabelNode(text: "\(number)", checkingStatus: spotModel.status)
+                let labelNode = SCNLabelNode(text: "\(number)")
                 labelNode.constraints = [constraint]
                 labelNode.position = SCNVector3(x: position.x, y: position.y + 0.05, z: position.z)//position
                 labelNode.renderingOrder = 100
                 markerRoot?.addChildNode(labelNode)
                 spotLabelNodes.append(labelNode)
                 
-//                let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
-//                flagNode.position = SCNVector3(x: position.x, y: position.y, z: position.z)
-//                flagNode.renderingOrder = 100
-//                markerRoot?.addChildNode(flagNode)
-//                spotFlagNodes.append(flagNode)
+                let ringNode = SCNRingNode()
+                ringNode.position = position
+                let normalDirection = spotModel.weldNormal
+                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                ringNode.orientation = rotation
+                markerRoot?.addChildNode(ringNode)
+                ringNodes.append(ringNode)
                 
-                if CheckingStatus(rawValue: spotModel.status) == .unInspected {
-                    let ringNode = SCNRingNode()
-                    ringNode.position = position
-                    markerRoot?.addChildNode(ringNode)
-                    ringNodes.append(ringNode)
-                } else {
-                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
-                    flagNode.position = position
-                    flagNode.renderingOrder = 100
-                    markerRoot?.addChildNode(flagNode)
-                    spotFlagNodes.append(flagNode)
-                }
+//                if CheckingStatus(rawValue: spotModel.status) == .unInspected {
+//                    
+//                } else {
+//                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
+//                    flagNode.position = position
+//                    let normalDirection = spotModel.weldNormal
+//                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+//                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+//                    flagNode.orientation = rotation
+//                    markerRoot?.addChildNode(flagNode)
+//                    spotFlagNodes.append(flagNode)
+//                }
             }
         } else {
             for spotLabelNode in self.spotLabelNodes {
@@ -322,6 +326,39 @@ extension ARViewController {
         }
         for ringNode in self.ringNodes {
             ringNode.isHidden = true
+        }
+    }
+    
+    func inspectAction() {
+//        for selectedSpot in self.selectedSpots {
+//            let position = selectedSpot.weldPoint
+//            let number = selectedSpot.labelNo
+//            if CheckingStatus(rawValue: selectedSpot.status) != .unInspected {
+//                let flagNode = SCNSpotFlagNode(checkingStatus: selectedSpot.status)
+//                flagNode.position = position
+//                let normalDirection = selectedSpot.weldNormal
+//                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+//                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+//                flagNode.orientation = rotation
+//                markerRoot?.addChildNode(flagNode)
+//                spotFlagNodes.append(flagNode)
+//            }
+//            if let selectedSpotLabelNode = selectedSpotLabelNodes.first(where: { $0.number == number }) {
+//                selectedSpotLabelNode.changeCheckStatus(with: CheckingStatus(rawValue: selectedSpot.status))
+//            }
+//        }
+        // show dialog
+        showInspectorDialog()
+    }
+    
+    
+    func showInspectorDialog() {
+        let inspectorView = InspcetorView(frame: .zero, selectedSpots: selectedSpots)
+        view.addSubview(inspectorView)
+        
+        inspectorView.snp.makeConstraints { make in
+            make.center.equalTo(view)
+            make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
         }
     }
 }

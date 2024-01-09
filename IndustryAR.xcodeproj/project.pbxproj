@@ -151,6 +151,8 @@
 		F0B06C982B46B134004EF9E0 /* SCNRingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */; };
 		F0B65C732B466C57005860EA /* ARSpotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C722B466C57005860EA /* ARSpotModel.swift */; };
 		F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */; };
+		F0E8F4312B4BE98A00876C2D /* InspcetorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */; };
+		F0E8F4332B4BF68900876C2D /* InspectorStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -313,6 +315,8 @@
 		F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRingNode.swift; sourceTree = "<group>"; };
 		F0B65C722B466C57005860EA /* ARSpotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSpotModel.swift; sourceTree = "<group>"; };
 		F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotFactoryTool.swift; sourceTree = "<group>"; };
+		F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspcetorView.swift; sourceTree = "<group>"; };
+		F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorStatusTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -373,6 +377,8 @@
 				CE53FB8B298E60590069CC7F /* ColorCollectionViewCell.swift */,
 				F033BB91299A883400625BAC /* BottomMenuView.swift */,
 				F033BCA129A7A7AF00625BAC /* TextInputView.swift */,
+				F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */,
+				F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1006,6 +1012,7 @@
 				052EAC8B29F412DF00E9A625 /* SCNSphere+Extensions.swift in Sources */,
 				F033BC30299BD06600625BAC /* MTDMulticastDelegate.m in Sources */,
 				F033BBF8299BD06600625BAC /* MetalTexturePool.swift in Sources */,
+				F0E8F4332B4BF68900876C2D /* InspectorStatusTableViewCell.swift in Sources */,
 				05C4168B29EFEA2600F904A7 /* MineViewController.swift in Sources */,
 				F033BBFE299BD06600625BAC /* PixelBufferPoolFactory.swift in Sources */,
 				F033BC19299BD06600625BAC /* ImageOutput.swift in Sources */,
@@ -1014,6 +1021,7 @@
 				F033BC12299BD06600625BAC /* BaseRecorder.swift in Sources */,
 				05C56B572A593FEE00D52C02 /* SCNGeometry+Extensions+Color.swift in Sources */,
 				F033BBF5299BD06600625BAC /* MediaSession.swift in Sources */,
+				F0E8F4312B4BE98A00876C2D /* InspcetorView.swift in Sources */,
 				05F1827B29B1AB4100EB4CA4 /* CVPixelBuffer+Extensions.swift in Sources */,
 				F033BC1B299BD06600625BAC /* VideoOutput.State.swift in Sources */,
 				F033BC2D299BD06600625BAC /* SelfSceneRecordable.swift in Sources */,

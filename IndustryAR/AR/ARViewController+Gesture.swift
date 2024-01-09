@@ -68,6 +68,10 @@ extension ARViewController {
                let tapNodeName = tapNode.name,
                tapNodeName.contains("spotLabelPanel") {
                 spotLabelNode.setSelected()
+                if let currentrSelectedSpot = spotWeldList.first(where: { $0.labelNo == spotLabelNode.number }) {
+                    selectedSpots.append(currentrSelectedSpot)
+                    selectedSpotLabelNodes.append(spotLabelNode)
+                }
             }
         }
     }

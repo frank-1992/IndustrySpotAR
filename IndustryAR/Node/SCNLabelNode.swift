@@ -166,6 +166,7 @@ class SCNLabelNode: SCNNode {
         case .unInspected:
             panelNode.geometry?.materials.first?.diffuse.contents = UIColor.white
         }
+        circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
     }
     
     public func setSelected() {

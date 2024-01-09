@@ -9,6 +9,41 @@ import UIKit
 import ARKit
 import CryptoKit
 
+extension SCNVector3 {
+    func cross(_ vector: SCNVector3) -> SCNVector3 {
+        return SCNVector3(y * vector.z - z * vector.y,
+                          z * vector.x - x * vector.z,
+                          x * vector.y - y * vector.x)
+    }
+}
+
+extension SCNMatrix4 {
+    func toQuaternion() -> SCNQuaternion {
+        let m = self
+        let qw = sqrt(1 + m.m11 + m.m22 + m.m33) / 2.0
+        let qx = (m.m32 - m.m23) / (4.0 * qw)
+        let qy = (m.m13 - m.m31) / (4.0 * qw)
+        let qz = (m.m21 - m.m12) / (4.0 * qw)
+        return SCNQuaternion(x: qx, y: qy, z: qz, w: qw)
+    }
+}
+
+extension SCNQuaternion {
+    init(from source: SCNVector3, to destination: SCNVector3) {
+        let sourceNormal = source.normalized()
+        let destinationNormal = destination.normalized()
+
+        let axis = sourceNormal.cross(destinationNormal)
+        let dot = sourceNormal.dot(vector: destinationNormal)
+        let angle = acos(dot)
+
+        let rotationMatrix = SCNMatrix4MakeRotation(Float(angle), axis.x, axis.y, axis.z)
+        self = rotationMatrix.toQuaternion()
+    }
+}
+
+
+
 // MARK: - CGPoint extensions
 extension CGPoint {
     init(_ vector: SCNVector3) {

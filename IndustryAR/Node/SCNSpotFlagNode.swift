@@ -12,12 +12,12 @@ class SCNSpotFlagNode: SCNNode {
     init(checkingStatus: String) {
         super.init()
         
-        let cylinderGeometry = SCNCylinder(radius: 0.01, height: 0.01)
+        let cylinderGeometry = SCNCylinder(radius: 0.01, height: 0.005)
         let cylinderNode = SCNNode(geometry: cylinderGeometry)
         let color = CheckingStatus(rawValue: checkingStatus).getColor()
         cylinderNode.geometry?.firstMaterial?.diffuse.contents = color
         cylinderNode.renderingOrder = 110
-        cylinderNode.pivot = SCNMatrix4MakeTranslation(0, -0.005, 0)
+        cylinderNode.pivot = SCNMatrix4MakeTranslation(0, -0.0025, 0)
 
         addChildNode(cylinderNode)
     }
