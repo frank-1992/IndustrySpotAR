@@ -9,6 +9,11 @@ import UIKit
 
 class InspectorStatusTableViewCell: UITableViewCell {
 
+    var currentSpotWeldStatusClosure: ((SpotWeld) -> Void)?
+    
+    private var previousSelectedButton: UIButton?
+    private var spotWeldModel: SpotWeld?
+    
     private lazy var number: UILabel = {
         let label = UILabel()
         label.text = "1"
@@ -21,6 +26,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
         let button = UIButton()
         button.setImage(UIImage(named: "circle_deselect"), for: .normal)
         button.setImage(UIImage(named: "circle_select"), for: .selected)
+        button.tag = 1000
+        button.addTarget(self, action: #selector(statusButtonAction(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -36,6 +43,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
         let button = UIButton()
         button.setImage(UIImage(named: "circle_deselect"), for: .normal)
         button.setImage(UIImage(named: "circle_select"), for: .selected)
+        button.tag = 1001
+        button.addTarget(self, action: #selector(statusButtonAction(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -51,6 +60,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
         let button = UIButton()
         button.setImage(UIImage(named: "circle_deselect"), for: .normal)
         button.setImage(UIImage(named: "circle_select"), for: .selected)
+        button.tag = 1002
+        button.addTarget(self, action: #selector(statusButtonAction(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -66,6 +77,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
         let button = UIButton()
         button.setImage(UIImage(named: "circle_deselect"), for: .normal)
         button.setImage(UIImage(named: "circle_select"), for: .selected)
+        button.tag = 1003
+        button.addTarget(self, action: #selector(statusButtonAction(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -91,6 +104,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
         button.layer.masksToBounds = true
         button.backgroundColor = SSColorWithHex(0xe0f0e9, 1)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        button.addTarget(self, action: #selector(detailButtonAction(_:)), for: .touchUpInside)
         return button
     }()
     
@@ -110,72 +124,72 @@ class InspectorStatusTableViewCell: UITableViewCell {
         
         backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
         
-        addSubview(number)
+        contentView.addSubview(number)
         number.snp.makeConstraints { make in
             make.left.equalTo(self).offset(20)
             make.centerY.equalTo(self)
         }
         
-        addSubview(vLine)
+        contentView.addSubview(vLine)
         vLine.snp.makeConstraints { make in
             make.left.equalTo(self).offset(80)
             make.top.bottom.equalTo(self)
             make.width.equalTo(2)
         }
         
-        addSubview(okButton)
+        contentView.addSubview(okButton)
         okButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(vLine.snp.right).offset(18)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
-        addSubview(okLabel)
+        contentView.addSubview(okLabel)
         okLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(okButton.snp.right).offset(4)
         }
         
-        addSubview(ngButton)
+        contentView.addSubview(ngButton)
         ngButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(okLabel.snp.right).offset(25)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
-        addSubview(ngLabel)
+        contentView.addSubview(ngLabel)
         ngLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(ngButton.snp.right).offset(4)
         }
         
-        addSubview(pendingButton)
+        contentView.addSubview(pendingButton)
         pendingButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(ngLabel.snp.right).offset(25)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
-        addSubview(pendingLabel)
+        contentView.addSubview(pendingLabel)
         pendingLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(pendingButton.snp.right).offset(4)
         }
         
-        addSubview(unInspectedButton)
+        contentView.addSubview(unInspectedButton)
         unInspectedButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(pendingLabel.snp.right).offset(25)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
-        addSubview(unInspectedLabel)
+        contentView.addSubview(unInspectedLabel)
         unInspectedLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(unInspectedButton.snp.right).offset(4)
         }
         
-        addSubview(detailButton)
+        contentView.addSubview(detailButton)
         detailButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
             make.left.equalTo(unInspectedLabel.snp.right).offset(25)
@@ -186,7 +200,38 @@ class InspectorStatusTableViewCell: UITableViewCell {
     }
     
     func setupCell(with spotWeldModel: SpotWeld) {
+        self.spotWeldModel = spotWeldModel
         self.number.text = "\(spotWeldModel.labelNo)"
     }
-
+    
+    @objc
+    private func statusButtonAction(_ sender: UIButton) {
+        sender.isSelected = !sender.isSelected
+        if let previousSelectedButton = previousSelectedButton, previousSelectedButton.tag != sender.tag {
+            previousSelectedButton.isSelected = false
+        }
+        if sender.tag == 1000 {
+            // ok
+            spotWeldModel?.status = "OK"
+        } else if sender.tag == 1001 {
+            // ng
+            spotWeldModel?.status = "NG"
+        } else if sender.tag == 1002 {
+            // pending
+            spotWeldModel?.status = "Pending"
+        } else if sender.tag == 1003 {
+            // uninspected
+            spotWeldModel?.status = "Uninspected"
+        }
+        previousSelectedButton = sender
+        
+        if let spotWeldModel = spotWeldModel {
+            currentSpotWeldStatusClosure?(spotWeldModel)
+        }
+    }
+    
+    @objc
+    private func detailButtonAction(_ sender: UIButton) {
+        
+    }
 }

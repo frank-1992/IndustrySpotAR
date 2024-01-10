@@ -149,7 +149,6 @@
 		F033BCA829AB23E400625BAC /* HistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA729AB23E400625BAC /* HistoryModel.swift */; };
 		F0B06C962B46ADD2004EF9E0 /* SCNSpotFlagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */; };
 		F0B06C982B46B134004EF9E0 /* SCNRingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */; };
-		F0B65C732B466C57005860EA /* ARSpotModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C722B466C57005860EA /* ARSpotModel.swift */; };
 		F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */; };
 		F0E8F4312B4BE98A00876C2D /* InspcetorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */; };
 		F0E8F4332B4BF68900876C2D /* InspectorStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */; };
@@ -313,7 +312,6 @@
 		F033BCA729AB23E400625BAC /* HistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryModel.swift; sourceTree = "<group>"; };
 		F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpotFlagNode.swift; sourceTree = "<group>"; };
 		F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRingNode.swift; sourceTree = "<group>"; };
-		F0B65C722B466C57005860EA /* ARSpotModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ARSpotModel.swift; sourceTree = "<group>"; };
 		F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotFactoryTool.swift; sourceTree = "<group>"; };
 		F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspcetorView.swift; sourceTree = "<group>"; };
 		F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorStatusTableViewCell.swift; sourceTree = "<group>"; };
@@ -453,7 +451,6 @@
 				CEC519AE297A74170054AD3A /* FileModel.swift */,
 				F033BCA729AB23E400625BAC /* HistoryModel.swift */,
 				05199E3D2B0F2E1300A0B81C /* SpotWeld.swift */,
-				F0B65C722B466C57005860EA /* ARSpotModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -1063,7 +1060,6 @@
 				CECCE9322968197D0098B299 /* AssetModel.swift in Sources */,
 				CE509C98298E32410081346C /* SphereNodesManager.swift in Sources */,
 				F033BC7C299FE93D00625BAC /* JsonUtil.swift in Sources */,
-				F0B65C732B466C57005860EA /* ARSpotModel.swift in Sources */,
 				CECCCEFD296817800098B299 /* ARFileManager.swift in Sources */,
 				F033BBFB299BD06600625BAC /* MetalTexturePoolFactory.swift in Sources */,
 				F033BBFC299BD06600625BAC /* MetalPixelBufferProducer.swift in Sources */,

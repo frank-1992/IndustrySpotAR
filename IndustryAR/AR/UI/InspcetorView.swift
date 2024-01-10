@@ -9,6 +9,14 @@ import UIKit
 
 class InspcetorView: UIView {
 
+    var spotWeldList: [SpotWeld] = [SpotWeld]()
+    
+    var newSpotWeldList: (([SpotWeld]) -> Void)?
+    
+    var saveSpotWeldJson: (() -> Void)?
+    
+    var closeAction: (() -> Void)?
+
     private lazy var inspectViewTitle: UILabel = {
         let label = UILabel()
         label.text = "Spot Inspect Report"
@@ -48,7 +56,7 @@ class InspcetorView: UIView {
         let datePicker = UIDatePicker(frame:.zero)
         datePicker.datePickerMode = .date
         datePicker.locale = Locale(identifier: NSLocale.current.identifier)
-        datePicker.backgroundColor = .white
+        datePicker.backgroundColor = .clear
         datePicker.setDate(Date(), animated: true)
         return datePicker
     }()
@@ -56,12 +64,11 @@ class InspcetorView: UIView {
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero)
         tableView.backgroundColor = .white
-//        tableView.layer.borderWidth = 2
-//        tableView.layer.borderColor = UIColor.white.cgColor
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.rowHeight = 44
+        tableView.isScrollEnabled = false
         tableView.register(InspectorStatusTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(InspectorStatusTableViewCell.self))
         return tableView
     }()
@@ -114,6 +121,7 @@ class InspcetorView: UIView {
         button.layer.masksToBounds = true
         button.backgroundColor = SSColorWithHex(0xe0f0e9, 1)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        button.addTarget(self, action: #selector(saveButtonClicked), for: .touchUpInside)
         return button
     }()
     
@@ -130,6 +138,7 @@ class InspcetorView: UIView {
         self.selectedSpots = selectedSpots
         super.init(frame: frame)
         setupSubviews()
+        setupGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -235,13 +244,58 @@ class InspcetorView: UIView {
         }
     }
     
+    func updateInspectorViewWithSpotWeldModels(_ spotWeldModels: [SpotWeld]) {
+        self.selectedSpots = spotWeldModels
+        tableView.reloadData()
+        tableView.snp.updateConstraints { make in
+            make.height.equalTo(44 * selectedSpots.count)
+        }
+    }
+    
+    private func setupGesture() {
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        addGestureRecognizer(panGesture)
+    }
+    
+    @objc
+    private func handlePan(_ gesture: UIPanGestureRecognizer) {
+            guard let superview = superview else { return }
+
+            let translation = gesture.translation(in: superview)
+
+            self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
+
+            gesture.setTranslation(.zero, in: superview)
+
+            if gesture.state == .ended {
+                let screenWidth = UIScreen.main.bounds.width
+                let screenHeight = UIScreen.main.bounds.height
+                
+                let minX = self.bounds.width / 2
+                let maxX = screenWidth - self.bounds.width / 2
+                let minY = self.bounds.height / 2
+                let maxY = screenHeight - self.bounds.height / 2
+                
+                var newX = self.center.x
+                var newY = self.center.y
+                
+                newX = max(minX, min(newX, maxX))
+                newY = max(minY, min(newY, maxY))
+                
+                UIView.animate(withDuration: 0.3) {
+                    self.center = CGPoint(x: newX, y: newY)
+                }
+            }
+    }
+    
     @objc
     private func closeButtonClicked() {
-        UIView.animate(withDuration: 0.25) {
-            self.alpha = 0
-        } completion: { _ in
-            self.removeFromSuperview()
-        }
+        closeAction?()
+    }
+    
+    @objc
+    private func saveButtonClicked() {
+        saveSpotWeldJson?()
     }
 }
 
@@ -254,6 +308,12 @@ extension InspcetorView: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: NSStringFromClass(InspectorStatusTableViewCell.self), for: indexPath) as? InspectorStatusTableViewCell
         let spotWeldModel = selectedSpots[indexPath.row]
         cell?.setupCell(with: spotWeldModel)
+        cell?.currentSpotWeldStatusClosure = { [weak self] spotWeldModel in
+            guard let self = self else { return }
+            if let index = self.selectedSpots.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
+                self.selectedSpots[index] = spotWeldModel
+            }
+        }
         return cell ?? UITableViewCell()
     }
 }

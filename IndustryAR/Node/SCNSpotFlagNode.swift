@@ -9,9 +9,10 @@ import UIKit
 import SceneKit
 
 class SCNSpotFlagNode: SCNNode {
-    init(checkingStatus: String) {
+    var number: Int = 0
+    init(checkingStatus: String, number: Int) {
         super.init()
-        
+        self.number = number
         let cylinderGeometry = SCNCylinder(radius: 0.01, height: 0.005)
         let cylinderNode = SCNNode(geometry: cylinderGeometry)
         let color = CheckingStatus(rawValue: checkingStatus).getColor()

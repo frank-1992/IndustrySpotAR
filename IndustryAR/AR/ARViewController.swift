@@ -255,7 +255,7 @@ class ARViewController: UIViewController {
     var spotLabelNodes: [SCNNode] = [SCNNode]()
     
     // spotflag cylinderNodes
-    var spotFlagNodes: [SCNNode] = [SCNNode]()
+    var spotFlagNodes: [SCNSpotFlagNode] = [SCNSpotFlagNode]()
     
     // selectedSpotLabelNodes
     var selectedSpotLabelNodes: [SCNLabelNode] = [SCNLabelNode]()
@@ -266,6 +266,8 @@ class ARViewController: UIViewController {
             selectedSpots = selectedSpots.sorted { $0.labelNo < $1.labelNo }
         }
     }
+    
+    var inspcetorView: InspcetorView?
     
     // uninspected ringNodes
     var ringNodes: [SCNNode] = [SCNNode]()

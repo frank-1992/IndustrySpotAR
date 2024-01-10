@@ -209,4 +209,16 @@ class ARFileManager: NSObject {
             try manager.removeItem(atPath: path)
         } catch {}
     }
+    
+    public func writeJSONStringToFile(fileURL: URL, jsonString: String, completion: @escaping (_ isSuccess: Bool) -> Void) {
+        do {
+            // 将JSON字符串写入文件并覆盖原有内容
+            try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
+            print("JSON字符串已成功覆盖写入文件: \(fileURL.path)")
+            completion(true)
+        } catch {
+            print("写入文件时出现错误: \(error)")
+            completion(false)
+        }
+    }
 }

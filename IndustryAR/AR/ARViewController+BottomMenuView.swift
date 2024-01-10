@@ -353,12 +353,110 @@ extension ARViewController {
     
     
     func showInspectorDialog() {
-        let inspectorView = InspcetorView(frame: .zero, selectedSpots: selectedSpots)
-        view.addSubview(inspectorView)
-        
-        inspectorView.snp.makeConstraints { make in
-            make.center.equalTo(view)
-            make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
+        if let inspcetorView = inspcetorView {
+            inspcetorView.snp.updateConstraints { make in
+                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
+            }
+            inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots)
+        } else {
+            let inspectorView = InspcetorView(frame: .zero, selectedSpots: selectedSpots)
+            inspectorView.spotWeldList = self.spotWeldList
+            view.addSubview(inspectorView)
+            self.inspcetorView = inspectorView
+            
+            inspectorView.snp.makeConstraints { make in
+                make.center.equalTo(view)
+                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
+            }
         }
+        
+        inspcetorView?.closeAction = {
+            UIView.animate(withDuration: 0.25) {
+                self.inspcetorView?.alpha = 0
+            } completion: { _ in
+                self.inspcetorView?.removeFromSuperview()
+                self.inspcetorView = nil
+            }
+        }
+        
+        inspcetorView?.saveSpotWeldJson = { [weak self] in
+            guard let self = self else { return }
+            for selectedSpot in self.selectedSpots {
+                if let index = self.spotWeldList.firstIndex(where: { $0.labelNo == selectedSpot.labelNo }) {
+                    self.spotWeldList[index] = selectedSpot
+                }
+            }
+            
+            let spotList = SpotList()
+            spotList.SpotList = self.spotWeldList
+            
+            do {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                let jsonData = try encoder.encode(spotList)
+
+                if var jsonString = String(data: jsonData, encoding: .utf8) {
+                    jsonString = jsonString.replacingOccurrences(of: "labelNo", with: "LabelNo")
+                    jsonString = jsonString.replacingOccurrences(of: "status", with: "Status")
+                    jsonString = jsonString.replacingOccurrences(of: "pointID", with: "PointID")
+                    jsonString = jsonString.replacingOccurrences(of: "weldPoint", with: "WeldPoint")
+                    jsonString = jsonString.replacingOccurrences(of: "weldNormal", with: "WeldNormal")
+                    jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
+                    
+                    if let assetModel = assetModel, let url = assetModel.spotJsonFilePaths.first {
+                        ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
+                            guard let self = self else { return }
+                            if isSuccess {
+                                self.showInspectedNodes()
+                            }
+                            let message = isSuccess ? "Success" : "Error"
+                            let alertController = UIAlertController(title: "Status", message: message,
+                                                                    preferredStyle: .alert)
+                            let okAction = UIAlertAction(title: "OK", style: .default,  handler: nil)
+                            alertController.addAction(okAction)
+                            self.present(alertController, animated: true, completion: nil)
+                        }
+                    }
+                }
+            } catch {
+                print("Error encoding SpotWeld array: \(error)")
+            }
+        }
+    }
+    
+    private func showInspectedNodes() {
+        if !spotLabelNodes.isEmpty {
+            let constraint = SCNBillboardConstraint()
+            constraint.freeAxes = SCNBillboardAxis.all
+            for selectedSpot in self.selectedSpots {
+                let position = selectedSpot.weldPoint
+                let number = selectedSpot.labelNo
+                if CheckingStatus(rawValue: selectedSpot.status) != .unInspected {
+                    let flagNode = SCNSpotFlagNode(checkingStatus: selectedSpot.status, number:     number)
+                    flagNode.position = position
+                    let normalDirection = selectedSpot.weldNormal
+                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                    flagNode.orientation = rotation
+                    markerRoot?.addChildNode(flagNode)
+                    spotFlagNodes.append(flagNode)
+                } else {
+                    // uninspected remove flag node
+                    if let flagNodeIndex = spotFlagNodes.firstIndex(where: { $0.number == number }) {
+                        let spotFlagNode = spotFlagNodes[flagNodeIndex]
+                        spotFlagNode.removeFromParentNode()
+                        spotFlagNodes.remove(at: flagNodeIndex)
+                    }
+                    
+                }
+                if let selectedSpotLabelNode = selectedSpotLabelNodes.first(where: { $0.number == number }) {
+                    selectedSpotLabelNode.changeCheckStatus(with: CheckingStatus(rawValue: selectedSpot.status))
+                }
+            }
+        }
+        for selectedSpotLabelNode in self.selectedSpotLabelNodes {
+            selectedSpotLabelNode.selected = false
+        }
+        selectedSpots.removeAll()
     }
 }
