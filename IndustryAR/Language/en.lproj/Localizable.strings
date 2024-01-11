@@ -62,3 +62,5 @@
 "decompression_fail" = "Decompression Failed";
 
 "file_password" = "File Password:";
+
+"no_selected_labelNode" = "No tags selected";

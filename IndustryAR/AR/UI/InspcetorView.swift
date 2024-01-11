@@ -16,6 +16,8 @@ class InspcetorView: UIView {
     var closeAction: (() -> Void)?
     
     var screenshotAction: (() -> Void)?
+    
+    var changedSpotWeldModel: ((SpotWeld) -> Void)?
 
     private lazy var inspectViewTitle: UILabel = {
         let label = UILabel()
@@ -330,6 +332,7 @@ extension InspcetorView: UITableViewDelegate, UITableViewDataSource {
             guard let self = self else { return }
             if let index = self.selectedSpots.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
                 self.selectedSpots[index] = spotWeldModel
+                self.changedSpotWeldModel?(spotWeldModel)
             }
         }
         return cell ?? UITableViewCell()

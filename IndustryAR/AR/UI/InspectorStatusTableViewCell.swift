@@ -202,6 +202,19 @@ class InspectorStatusTableViewCell: UITableViewCell {
     func setupCell(with spotWeldModel: SpotWeld) {
         self.spotWeldModel = spotWeldModel
         self.number.text = "\(spotWeldModel.labelNo)"
+        if spotWeldModel.status == "OK" {
+            okButton.isSelected = true
+            previousSelectedButton = okButton
+        } else if spotWeldModel.status == "NG" {
+            ngButton.isSelected = true
+            previousSelectedButton = ngButton
+        } else if spotWeldModel.status == "Pending" {
+            pendingButton.isSelected = true
+            previousSelectedButton = pendingButton
+        } else if spotWeldModel.status == "Uninspected" {
+            unInspectedButton.isSelected = true
+            previousSelectedButton = unInspectedButton
+        }
     }
     
     @objc
@@ -212,15 +225,29 @@ class InspectorStatusTableViewCell: UITableViewCell {
         }
         if sender.tag == 1000 {
             // ok
-            spotWeldModel?.status = "OK"
+            if sender.isSelected {
+                spotWeldModel?.status = "OK"
+            } else {
+                spotWeldModel?.status = "Uninspected"
+            }
         } else if sender.tag == 1001 {
             // ng
-            spotWeldModel?.status = "NG"
+            if sender.isSelected {
+                spotWeldModel?.status = "NG"
+            } else {
+                spotWeldModel?.status = "Uninspected"
+            }
         } else if sender.tag == 1002 {
             // pending
-            spotWeldModel?.status = "Pending"
+            if sender.isSelected {
+                spotWeldModel?.status = "Pending"
+            } else {
+                spotWeldModel?.status = "Uninspected"
+            }
         } else if sender.tag == 1003 {
             // uninspected
+            spotWeldModel?.status = "Uninspected"
+        } else {
             spotWeldModel?.status = "Uninspected"
         }
         previousSelectedButton = sender

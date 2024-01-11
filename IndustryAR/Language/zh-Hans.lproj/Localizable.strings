@@ -65,3 +65,5 @@
 "decompression_fail" = "解压失败";
 
 "file_password" = "文件密码:";
+
+"no_selected_labelNode" = "No tags selected";

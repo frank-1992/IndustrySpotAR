@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import PKHUD
 import SceneKit
+import ProgressHUD
 
 extension ARViewController {
     func setupBottomMenuView() {
@@ -290,19 +291,43 @@ extension ARViewController {
                 markerRoot?.addChildNode(ringNode)
                 ringNodes.append(ringNode)
                 
-//                if CheckingStatus(rawValue: spotModel.status) == .unInspected {
-//                    
-//                } else {
-//                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status)
+                if CheckingStatus(rawValue: spotModel.status) != .unInspected {
+                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status, number: number)
+                    flagNode.position = position
+                    let normalDirection = spotModel.weldNormal
+                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                    flagNode.orientation = rotation
+                    markerRoot?.addChildNode(flagNode)
+                    spotFlagNodes.append(flagNode)
+                    
+                    if !spotLabelNodes.isEmpty {
+                        let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
+                        spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotModel.status))
+                    }
+                }
+            }
+            
+//            for spotWeldModel in self.spotWeldList {
+//                let position = spotWeldModel.weldPoint
+//                let number = spotWeldModel.labelNo
+//                if CheckingStatus(rawValue: spotWeldModel.status) != .unInspected {
+//                    let flagNode = SCNSpotFlagNode(checkingStatus: spotWeldModel.status, number: number)
 //                    flagNode.position = position
-//                    let normalDirection = spotModel.weldNormal
+//                    let normalDirection = spotWeldModel.weldNormal
 //                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
 //                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
 //                    flagNode.orientation = rotation
 //                    markerRoot?.addChildNode(flagNode)
 //                    spotFlagNodes.append(flagNode)
+//                    
+//                    if !spotLabelNodes.isEmpty {
+//                        let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
+//                        spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotWeldModel.status))
+//                    }
 //                }
-            }
+//            }
+            
         } else {
             for spotLabelNode in self.spotLabelNodes {
                 spotLabelNode.isHidden = false
@@ -329,25 +354,31 @@ extension ARViewController {
     }
     
     func inspectAction() {
-//        for selectedSpot in self.selectedSpots {
-//            let position = selectedSpot.weldPoint
-//            let number = selectedSpot.labelNo
-//            if CheckingStatus(rawValue: selectedSpot.status) != .unInspected {
-//                let flagNode = SCNSpotFlagNode(checkingStatus: selectedSpot.status)
+//        for spotWeldModel in self.spotWeldList {
+//            let position = spotWeldModel.weldPoint
+//            let number = spotWeldModel.labelNo
+//            if CheckingStatus(rawValue: spotWeldModel.status) != .unInspected {
+//                let flagNode = SCNSpotFlagNode(checkingStatus: spotWeldModel.status, number: number)
 //                flagNode.position = position
-//                let normalDirection = selectedSpot.weldNormal
+//                let normalDirection = spotWeldModel.weldNormal
 //                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
 //                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
 //                flagNode.orientation = rotation
 //                markerRoot?.addChildNode(flagNode)
 //                spotFlagNodes.append(flagNode)
-//            }
-//            if let selectedSpotLabelNode = selectedSpotLabelNodes.first(where: { $0.number == number }) {
-//                selectedSpotLabelNode.changeCheckStatus(with: CheckingStatus(rawValue: selectedSpot.status))
+//                
+//                if !spotLabelNodes.isEmpty {
+//                    let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
+//                    spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotWeldModel.status))
+//                }
 //            }
 //        }
         // show dialog
-        showInspectorDialog()
+        if selectedSpotLabelNodes.isEmpty {
+            ProgressHUD.failed(no_selected_labelNode.localizedString(), delay: 1.0)
+        } else {
+            showInspectorDialog()
+        }
     }
     
     
@@ -368,12 +399,50 @@ extension ARViewController {
             }
         }
         
+        for spotLabelNode in self.selectedSpotLabelNodes {
+            spotLabelNode.setSelected()
+        }
+        
         inspcetorView?.closeAction = {
             UIView.animate(withDuration: 0.25) {
                 self.inspcetorView?.alpha = 0
             } completion: { _ in
                 self.inspcetorView?.removeFromSuperview()
                 self.inspcetorView = nil
+            }
+        }
+        
+        inspcetorView?.changedSpotWeldModel = { [weak self] spotWeldModel in
+            guard let self = self else { return }
+            let position = spotWeldModel.weldPoint
+            let number = spotWeldModel.labelNo
+            if CheckingStatus(rawValue: spotWeldModel.status) != .unInspected {
+                if let flagNodeIndex = self.spotFlagNodes.firstIndex(where: { $0.number == number }) {
+                    let spotFlagNode = self.spotFlagNodes[flagNodeIndex]
+                    spotFlagNode.changeWithStatus(checkingStatus: spotWeldModel.status)
+                } else {
+                    let flagNode = SCNSpotFlagNode(checkingStatus: spotWeldModel.status, number:     number)
+                    flagNode.position = position
+                    let normalDirection = spotWeldModel.weldNormal
+                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                    flagNode.orientation = rotation
+                    self.markerRoot?.addChildNode(flagNode)
+                    self.spotFlagNodes.append(flagNode)
+                }
+            } else {
+                // uninspected remove flag node
+                if let flagNodeIndex = self.spotFlagNodes.firstIndex(where: { $0.number == number }) {
+                    let spotFlagNode = self.spotFlagNodes[flagNodeIndex]
+                    spotFlagNode.removeFromParentNode()
+                    self.spotFlagNodes.remove(at: flagNodeIndex)
+                }
+            }
+            if let selectedSpotLabelNode = self.selectedSpotLabelNodes.first(where: { $0.number == number }) {
+                selectedSpotLabelNode.changeCheckStatus(with: CheckingStatus(rawValue: spotWeldModel.status))
+            }
+            if let originWeldSpotModelIndex = self.spotWeldList.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
+                self.spotWeldList[originWeldSpotModelIndex] = spotWeldModel
             }
         }
         
@@ -399,9 +468,12 @@ extension ARViewController {
                 inspcetorView.hideButtons()
                 Task {
                     ARFileManager.shared.createPDF(from: inspcetorView, withImage: image, saveTo: pdfFileURL) { isSuccess in
-                        if isSuccess {
-                            DispatchQueue.main.async {
-                                inspcetorView.showButtons()
+                        DispatchQueue.main.async {
+                            inspcetorView.showButtons()
+                            if isSuccess {
+                                ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
+                            } else {
+                                ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)
                             }
                         }
                     }
@@ -426,17 +498,14 @@ extension ARViewController {
                         
                         if let assetModel = self.assetModel, let url = assetModel.spotJsonFilePaths.first {
                             ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
-                                guard let self = self else { return }
+//                                guard let self = self else { return }
                                 DispatchQueue.main.async {
                                     if isSuccess {
-                                        self.showInspectedNodes()
+//                                        self.showInspectedNodes()
+                                        ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
+                                    } else {
+                                        ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)
                                     }
-                                    let message = isSuccess ? "Success" : "Error"
-                                    let alertController = UIAlertController(title: "Status", message: message,
-                                                                            preferredStyle: .alert)
-                                    let okAction = UIAlertAction(title: "OK", style: .default,  handler: nil)
-                                    alertController.addAction(okAction)
-                                    self.present(alertController, animated: true, completion: nil)
                                 }
                             }
                         }
@@ -455,16 +524,13 @@ extension ARViewController {
                     let imageName = UUID().uuidString
                     ARFileManager.shared.saveImageToPath(image: screenshot, imageName: imageName, url: screenshotURL.appendingPathComponent("ScreenShot", isDirectory: true)
                     ) { fileURL in
-                        let message = fileURL != nil ? "Success" : "Error"
                         DispatchQueue.main.async {
                             if fileURL != nil {
                                 assetModel.savedScreenshotURL = fileURL
+                                ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
+                            } else {
+                                ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)
                             }
-                            let alertController = UIAlertController(title: "Status", message: message,
-                                                                    preferredStyle: .alert)
-                            let okAction = UIAlertAction(title: "OK", style: .default,  handler: nil)
-                            alertController.addAction(okAction)
-                            self.present(alertController, animated: true, completion: nil)
                         }
                     }
                 }
@@ -474,8 +540,6 @@ extension ARViewController {
     
     private func showInspectedNodes() {
         if !spotLabelNodes.isEmpty {
-            let constraint = SCNBillboardConstraint()
-            constraint.freeAxes = SCNBillboardAxis.all
             for selectedSpot in self.selectedSpots {
                 let position = selectedSpot.weldPoint
                 let number = selectedSpot.labelNo

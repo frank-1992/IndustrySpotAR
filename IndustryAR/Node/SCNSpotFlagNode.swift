@@ -10,6 +10,9 @@ import SceneKit
 
 class SCNSpotFlagNode: SCNNode {
     var number: Int = 0
+    
+    private var cylinderNode: SCNNode?
+    
     init(checkingStatus: String, number: Int) {
         super.init()
         self.number = number
@@ -19,12 +22,17 @@ class SCNSpotFlagNode: SCNNode {
         cylinderNode.geometry?.firstMaterial?.diffuse.contents = color
         cylinderNode.renderingOrder = 110
         cylinderNode.pivot = SCNMatrix4MakeTranslation(0, -0.0025, 0)
-
+        self.cylinderNode = cylinderNode
         addChildNode(cylinderNode)
     }
     
+    public func changeWithStatus(checkingStatus: String) {
+        let color = CheckingStatus(rawValue: checkingStatus).getColor()
+        cylinderNode?.geometry?.firstMaterial?.diffuse.contents = color
+    }
+    
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
     }
     
     override class var supportsSecureCoding: Bool {

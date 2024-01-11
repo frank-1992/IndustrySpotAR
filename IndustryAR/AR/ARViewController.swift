@@ -252,7 +252,7 @@ class ARViewController: UIViewController {
     var lineNodes: [SCNLineNode] = [SCNLineNode]()
     
     // spotLabelNodes
-    var spotLabelNodes: [SCNNode] = [SCNNode]()
+    var spotLabelNodes: [SCNLabelNode] = [SCNLabelNode]()
     
     // spotflag cylinderNodes
     var spotFlagNodes: [SCNSpotFlagNode] = [SCNSpotFlagNode]()
