@@ -98,7 +98,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
     
     private lazy var detailButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Detail", for: .normal)
+        button.setTitle("Property", for: .normal)
         button.setTitleColor(SSColorWithHex(0x2e4e7e, 1), for: .normal)
         button.layer.cornerRadius = 4
         button.layer.masksToBounds = true

@@ -8,14 +8,14 @@
 import UIKit
 
 class InspcetorView: UIView {
-
-    var spotWeldList: [SpotWeld] = [SpotWeld]()
     
     var newSpotWeldList: (([SpotWeld]) -> Void)?
     
     var saveSpotWeldJson: (() -> Void)?
     
     var closeAction: (() -> Void)?
+    
+    var screenshotAction: (() -> Void)?
 
     private lazy var inspectViewTitle: UILabel = {
         let label = UILabel()
@@ -110,6 +110,7 @@ class InspcetorView: UIView {
         button.layer.masksToBounds = true
         button.backgroundColor = SSColorWithHex(0xe0f0e9, 1)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 20, weight: .medium)
+        button.addTarget(self, action: #selector(screenshotButtonClicked), for: .touchUpInside)
         return button
     }()
     
@@ -296,6 +297,23 @@ class InspcetorView: UIView {
     @objc
     private func saveButtonClicked() {
         saveSpotWeldJson?()
+    }
+    
+    @objc
+    private func screenshotButtonClicked() {
+        screenshotAction?()
+    }
+    
+    func hideButtons() {
+        screenShotButton.isHidden = true
+        backButton.isHidden = true
+        saveButton.isHidden = true
+    }
+    
+    func showButtons() {
+        screenShotButton.isHidden = false
+        backButton.isHidden = false
+        saveButton.isHidden = false
     }
 }
 

@@ -72,7 +72,9 @@ extension ChildProjectListViewController: UITableViewDataSource {
 extension ChildProjectListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let model = assetModels[indexPath.row]
+        let folderURL = projectModel?.childDirectory[indexPath.row]
         let arVC = ARViewController()
+        model.folderURL = folderURL
         arVC.assetModel = model
         navigationController?.pushViewController(arVC, animated: true)
     }

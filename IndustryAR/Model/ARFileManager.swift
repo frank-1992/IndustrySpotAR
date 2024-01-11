@@ -212,13 +212,55 @@ class ARFileManager: NSObject {
     
     public func writeJSONStringToFile(fileURL: URL, jsonString: String, completion: @escaping (_ isSuccess: Bool) -> Void) {
         do {
-            // 将JSON字符串写入文件并覆盖原有内容
             try jsonString.write(to: fileURL, atomically: true, encoding: .utf8)
-            print("JSON字符串已成功覆盖写入文件: \(fileURL.path)")
             completion(true)
         } catch {
-            print("写入文件时出现错误: \(error)")
             completion(false)
         }
+    }
+    
+    public func saveImageToPath(image: UIImage, imageName: String, url: URL, completion: @escaping (_ url: URL?) -> Void) {
+        var isDirectory: ObjCBool = ObjCBool(false)
+        let isExist = manager.fileExists(atPath: url.path, isDirectory: &isDirectory)
+        if !isExist {
+            do {
+                try manager.createDirectory(at: url, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                print("createDirectory error:\(error)")
+            }
+        }
+        let fileURL = url.appendingPathComponent("\(imageName).png")
+        if let data = image.pngData() {
+            do {
+                try data.write(to: fileURL)
+                completion(fileURL)
+                print("Image saved at: \(fileURL)")
+            } catch {
+                completion(nil)
+                print("Error saving image: \(error)")
+            }
+        }
+    }
+    
+    public func createPDF(from view: UIView, withImage image: UIImage?, saveTo fileURL: URL, completion: @escaping (_ isSuccess: Bool) -> Void) {
+        let renderer = UIGraphicsPDFRenderer(bounds: view.bounds)
+            do {
+                try renderer.writePDF(to: fileURL) { context in
+                    context.beginPage()
+                    view.layer.render(in: context.cgContext)
+
+                    // Additional page: Draw an image
+                    if let image = image {
+                        context.beginPage()
+                        let imageRect = CGRect(x: 0, y: 0, width: context.pdfContextBounds.width, height: context.pdfContextBounds.height)
+                        image.draw(in: imageRect)
+                    }
+                }
+                completion(true)
+                print("PDF created successfully at: \(fileURL.relativePath)")
+            } catch {
+                completion(false)
+                print("Error creating PDF: \(error.localizedDescription)")
+            }
     }
 }

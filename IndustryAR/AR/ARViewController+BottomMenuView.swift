@@ -109,7 +109,6 @@ extension ARViewController {
         // inspect
         bottomMenuView.inspectClosure = { [weak self]  in
             guard let self = self else { return }
-            //self.inspect()
             self.inspectAction()
         }
         
@@ -360,7 +359,6 @@ extension ARViewController {
             inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots)
         } else {
             let inspectorView = InspcetorView(frame: .zero, selectedSpots: selectedSpots)
-            inspectorView.spotWeldList = self.spotWeldList
             view.addSubview(inspectorView)
             self.inspcetorView = inspectorView
             
@@ -379,37 +377,89 @@ extension ARViewController {
             }
         }
         
-        inspcetorView?.saveSpotWeldJson = { [weak self] in
-            guard let self = self else { return }
+        inspcetorView?.saveSpotWeldJson = { [weak self, weak inspcetorView] in
+            guard let self = self,
+                  let inspcetorView = inspcetorView,
+                  let assetModel = assetModel else {
+                return
+            }
             for selectedSpot in self.selectedSpots {
                 if let index = self.spotWeldList.firstIndex(where: { $0.labelNo == selectedSpot.labelNo }) {
                     self.spotWeldList[index] = selectedSpot
                 }
             }
             
+            // pdf
+            var image: UIImage?
+            if let screenshotURL = assetModel.savedScreenshotURL {
+                image = UIImage(contentsOfFile: screenshotURL.relativePath)
+            }
+            if let folderURL = assetModel.folderURL {
+                let pdfFileURL = folderURL.appendingPathComponent("\(UUID().uuidString).pdf")
+                inspcetorView.hideButtons()
+                Task {
+                    ARFileManager.shared.createPDF(from: inspcetorView, withImage: image, saveTo: pdfFileURL) { isSuccess in
+                        if isSuccess {
+                            DispatchQueue.main.async {
+                                inspcetorView.showButtons()
+                            }
+                        }
+                    }
+                }
+            }
+            
             let spotList = SpotList()
             spotList.SpotList = self.spotWeldList
-            
-            do {
-                let encoder = JSONEncoder()
-                encoder.outputFormatting = .prettyPrinted
-                let jsonData = try encoder.encode(spotList)
+            Task {
+                do {
+                    let encoder = JSONEncoder()
+                    encoder.outputFormatting = .prettyPrinted
+                    let jsonData = try encoder.encode(spotList)
 
-                if var jsonString = String(data: jsonData, encoding: .utf8) {
-                    jsonString = jsonString.replacingOccurrences(of: "labelNo", with: "LabelNo")
-                    jsonString = jsonString.replacingOccurrences(of: "status", with: "Status")
-                    jsonString = jsonString.replacingOccurrences(of: "pointID", with: "PointID")
-                    jsonString = jsonString.replacingOccurrences(of: "weldPoint", with: "WeldPoint")
-                    jsonString = jsonString.replacingOccurrences(of: "weldNormal", with: "WeldNormal")
-                    jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
-                    
-                    if let assetModel = assetModel, let url = assetModel.spotJsonFilePaths.first {
-                        ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
-                            guard let self = self else { return }
-                            if isSuccess {
-                                self.showInspectedNodes()
+                    if var jsonString = String(data: jsonData, encoding: .utf8) {
+                        jsonString = jsonString.replacingOccurrences(of: "labelNo", with: "LabelNo")
+                        jsonString = jsonString.replacingOccurrences(of: "status", with: "Status")
+                        jsonString = jsonString.replacingOccurrences(of: "pointID", with: "PointID")
+                        jsonString = jsonString.replacingOccurrences(of: "weldPoint", with: "WeldPoint")
+                        jsonString = jsonString.replacingOccurrences(of: "weldNormal", with: "WeldNormal")
+                        jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
+                        
+                        if let assetModel = self.assetModel, let url = assetModel.spotJsonFilePaths.first {
+                            ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
+                                guard let self = self else { return }
+                                DispatchQueue.main.async {
+                                    if isSuccess {
+                                        self.showInspectedNodes()
+                                    }
+                                    let message = isSuccess ? "Success" : "Error"
+                                    let alertController = UIAlertController(title: "Status", message: message,
+                                                                            preferredStyle: .alert)
+                                    let okAction = UIAlertAction(title: "OK", style: .default,  handler: nil)
+                                    alertController.addAction(okAction)
+                                    self.present(alertController, animated: true, completion: nil)
+                                }
                             }
-                            let message = isSuccess ? "Success" : "Error"
+                        }
+                    }
+                } catch {
+                    print("Error encoding SpotWeld array: \(error)")
+                }
+            }
+        }
+        
+        inspcetorView?.screenshotAction = { [weak self] in
+            guard let self = self, let assetModel = assetModel else { return }
+            let photo = self.recorder?.photo()
+            if let screenshotURL = assetModel.folderURL, let screenshot = photo {
+                Task {
+                    let imageName = UUID().uuidString
+                    ARFileManager.shared.saveImageToPath(image: screenshot, imageName: imageName, url: screenshotURL.appendingPathComponent("ScreenShot", isDirectory: true)
+                    ) { fileURL in
+                        let message = fileURL != nil ? "Success" : "Error"
+                        DispatchQueue.main.async {
+                            if fileURL != nil {
+                                assetModel.savedScreenshotURL = fileURL
+                            }
                             let alertController = UIAlertController(title: "Status", message: message,
                                                                     preferredStyle: .alert)
                             let okAction = UIAlertAction(title: "OK", style: .default,  handler: nil)
@@ -418,8 +468,6 @@ extension ARViewController {
                         }
                     }
                 }
-            } catch {
-                print("Error encoding SpotWeld array: \(error)")
             }
         }
     }
