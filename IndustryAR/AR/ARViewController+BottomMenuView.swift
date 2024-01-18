@@ -444,11 +444,14 @@ extension ARViewController {
             if let originWeldSpotModelIndex = self.spotWeldList.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
                 self.spotWeldList[originWeldSpotModelIndex] = spotWeldModel
             }
+            
+            if let spotIndex = self.selectedSpots.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
+                self.selectedSpots[spotIndex] = spotWeldModel
+            }
         }
         
-        inspcetorView?.saveSpotWeldJson = { [weak self, weak inspcetorView] in
+        inspcetorView?.saveSpotWeldJson = { [weak self] inspectorName, time in
             guard let self = self,
-                  let inspcetorView = inspcetorView,
                   let assetModel = assetModel else {
                 return
             }
@@ -463,13 +466,23 @@ extension ARViewController {
             if let screenshotURL = assetModel.savedScreenshotURL {
                 image = UIImage(contentsOfFile: screenshotURL.relativePath)
             }
+            
+            let width = self.view.bounds.width
+            let pdfView = PDFView(frame: .zero, selectedSpots: self.selectedSpots, width: width - 100, inspector: inspectorName, time: time, image: image)
+            self.view.addSubview(pdfView)
+            
+            pdfView.snp.makeConstraints { make in
+                make.centerX.equalTo(self.view)
+                make.bottom.equalTo(self.view.snp.top)
+                make.size.equalTo(CGSize(width: Int(width) - 100, height: 800 + 44 * self.selectedSpots.count))
+            }
+            
             if let folderURL = assetModel.folderURL {
                 let pdfFileURL = folderURL.appendingPathComponent("\(UUID().uuidString).pdf")
-                inspcetorView.hideButtons()
                 Task {
-                    ARFileManager.shared.createPDF(from: inspcetorView, withImage: image, saveTo: pdfFileURL) { isSuccess in
+                    ARFileManager.shared.createPDF(from: pdfView, withImage: nil, saveTo: pdfFileURL) { isSuccess in
                         DispatchQueue.main.async {
-                            inspcetorView.showButtons()
+                            pdfView.removeFromSuperview()
                             if isSuccess {
                                 ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
                             } else {
@@ -482,6 +495,7 @@ extension ARViewController {
             
             let spotList = SpotList()
             spotList.SpotList = self.spotWeldList
+            spotList.ScreenshotPath = assetModel.savedScreenshotURL?.relativePath
             Task {
                 do {
                     let encoder = JSONEncoder()
@@ -497,11 +511,9 @@ extension ARViewController {
                         jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
                         
                         if let assetModel = self.assetModel, let url = assetModel.spotJsonFilePaths.first {
-                            ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
-//                                guard let self = self else { return }
+                            ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { isSuccess in
                                 DispatchQueue.main.async {
                                     if isSuccess {
-//                                        self.showInspectedNodes()
                                         ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
                                     } else {
                                         ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)

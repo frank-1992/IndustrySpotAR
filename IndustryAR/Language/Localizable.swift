@@ -70,6 +70,9 @@ let file_password = "file_password"
 
 let no_selected_labelNode = "no_selected_labelNode"
 
+let no_inspector = "no_inspector"
+
+
 extension String {
     func localizedString() -> String {
         return NSLocalizedString(self, comment: "")

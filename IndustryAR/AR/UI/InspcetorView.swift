@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import ProgressHUD
 
 class InspcetorView: UIView {
     
     var newSpotWeldList: (([SpotWeld]) -> Void)?
     
-    var saveSpotWeldJson: (() -> Void)?
+    var saveSpotWeldJson: ((String, String) -> Void)?
     
     var closeAction: (() -> Void)?
     
@@ -152,7 +153,7 @@ class InspcetorView: UIView {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
-        backgroundColor = SSColorWithHex(0x00e09e, 1.0)
+        backgroundColor = SSColorWithHex(0x00e09e, 0.8)
         
         addSubview(inspectViewTitle)
         inspectViewTitle.snp.makeConstraints { make in
@@ -258,37 +259,60 @@ class InspcetorView: UIView {
     private func setupGesture() {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         addGestureRecognizer(panGesture)
+        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        addGestureRecognizer(tapGesture)
     }
     
     @objc
+    private func handleTap(_ gesture: UITapGestureRecognizer) {
+        inspectorName.resignFirstResponder()
+    }
+    
+    
+    @objc
     private func handlePan(_ gesture: UIPanGestureRecognizer) {
-            guard let superview = superview else { return }
+        guard let superview = superview else { return }
+        
+        inspectorName.resignFirstResponder()
+        
+        let translation = gesture.translation(in: superview)
 
-            let translation = gesture.translation(in: superview)
-
-            self.center = CGPoint(x: self.center.x + translation.x, y: self.center.y + translation.y)
-
-            gesture.setTranslation(.zero, in: superview)
-
-            if gesture.state == .ended {
-                let screenWidth = UIScreen.main.bounds.width
-                let screenHeight = UIScreen.main.bounds.height
-                
-                let minX = self.bounds.width / 2
-                let maxX = screenWidth - self.bounds.width / 2
-                let minY = self.bounds.height / 2
-                let maxY = screenHeight - self.bounds.height / 2
-                
-                var newX = self.center.x
-                var newY = self.center.y
-                
-                newX = max(minX, min(newX, maxX))
-                newY = max(minY, min(newY, maxY))
-                
-                UIView.animate(withDuration: 0.3) {
-                    self.center = CGPoint(x: newX, y: newY)
-                }
+        let originX = self.frame.origin.x
+        let originY = self.frame.origin.y
+        let width = self.bounds.width
+        let height = self.bounds.height
+        self.frame = CGRect(x: originX + translation.x, y: originY + translation.y, width: width, height: height)
+        gesture.setTranslation(.zero, in: superview)
+        
+        if gesture.state == .ended {
+            let minX = -(width - (width / 5))
+            let maxX = UIScreen.main.bounds.width - width / 5
+            let minY = -(height - (height / 5))
+            let maxY = UIScreen.main.bounds.height - height / 5
+            
+            var newX = self.frame.origin.x
+            var newY = self.frame.origin.y
+            
+            if newX <= minX {
+                newX = minX
             }
+            if newX >= maxX {
+                newX = maxX
+            }
+            
+            if newY <= minY {
+                newY = minY
+            }
+            
+            if newY >= maxY {
+                newY = maxY
+            }
+            
+            UIView.animate(withDuration: 0.3) {
+                self.frame = CGRect(x: newX, y: newY, width: width, height: height)
+            }
+        }
     }
     
     @objc
@@ -298,24 +322,20 @@ class InspcetorView: UIView {
     
     @objc
     private func saveButtonClicked() {
-        saveSpotWeldJson?()
+        inspectorName.resignFirstResponder()
+        if let name = inspectorName.text, !name.isEmpty {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            saveSpotWeldJson?(name, dateFormatter.string(from: time.date))
+        } else {
+            ProgressHUD.failed(no_inspector.localizedString(), delay: 1.5)
+        }
     }
     
     @objc
     private func screenshotButtonClicked() {
+        inspectorName.resignFirstResponder()
         screenshotAction?()
-    }
-    
-    func hideButtons() {
-        screenShotButton.isHidden = true
-        backButton.isHidden = true
-        saveButton.isHidden = true
-    }
-    
-    func showButtons() {
-        screenShotButton.isHidden = false
-        backButton.isHidden = false
-        saveButton.isHidden = false
     }
 }
 
@@ -330,6 +350,7 @@ extension InspcetorView: UITableViewDelegate, UITableViewDataSource {
         cell?.setupCell(with: spotWeldModel)
         cell?.currentSpotWeldStatusClosure = { [weak self] spotWeldModel in
             guard let self = self else { return }
+            self.inspectorName.resignFirstResponder()
             if let index = self.selectedSpots.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
                 self.selectedSpots[index] = spotWeldModel
                 self.changedSpotWeldModel?(spotWeldModel)
