@@ -148,6 +148,7 @@
 		F033BCA629A7BDA100625BAC /* SCNNode+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA529A7BDA100625BAC /* SCNNode+Extensions.swift */; };
 		F033BCA829AB23E400625BAC /* HistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA729AB23E400625BAC /* HistoryModel.swift */; };
 		F05962B82B58D90E00A0325F /* SpotPropertyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05962B72B58D90E00A0325F /* SpotPropertyView.swift */; };
+		F05962BA2B58E10C00A0325F /* InspectSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05962B92B58E10C00A0325F /* InspectSummaryView.swift */; };
 		F09929292B57C25F00557291 /* PDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09929282B57C25F00557291 /* PDFView.swift */; };
 		F099292B2B57CBE700557291 /* PDFTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F099292A2B57CBE700557291 /* PDFTableViewCell.swift */; };
 		F0B06C962B46ADD2004EF9E0 /* SCNSpotFlagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */; };
@@ -314,6 +315,7 @@
 		F033BCA529A7BDA100625BAC /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
 		F033BCA729AB23E400625BAC /* HistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryModel.swift; sourceTree = "<group>"; };
 		F05962B72B58D90E00A0325F /* SpotPropertyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPropertyView.swift; sourceTree = "<group>"; };
+		F05962B92B58E10C00A0325F /* InspectSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectSummaryView.swift; sourceTree = "<group>"; };
 		F09929282B57C25F00557291 /* PDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFView.swift; sourceTree = "<group>"; };
 		F099292A2B57CBE700557291 /* PDFTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTableViewCell.swift; sourceTree = "<group>"; };
 		F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpotFlagNode.swift; sourceTree = "<group>"; };
@@ -386,6 +388,7 @@
 				F09929282B57C25F00557291 /* PDFView.swift */,
 				F099292A2B57CBE700557291 /* PDFTableViewCell.swift */,
 				F05962B72B58D90E00A0325F /* SpotPropertyView.swift */,
+				F05962B92B58E10C00A0325F /* InspectSummaryView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1004,6 +1007,7 @@
 				CE53FB84298E4FFB0069CC7F /* SettingsViewController.swift in Sources */,
 				F033BBFA299BD06600625BAC /* PixelBufferPool.swift in Sources */,
 				F033BC16299BD06600625BAC /* CleanRecorder.VideoInput.swift in Sources */,
+				F05962BA2B58E10C00A0325F /* InspectSummaryView.swift in Sources */,
 				F033BC28299BD06600625BAC /* Updater.swift in Sources */,
 				CEDF542629AC718F00C5AC95 /* HistoryProjectListController.swift in Sources */,
 				05A2E19E29B97534003ED74B /* SCNGeometry+Extension.swift in Sources */,

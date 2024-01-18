@@ -116,7 +116,7 @@ extension ARViewController {
         // inspect summary
         bottomMenuView.inspectSummaryClosure = { [weak self]  in
             guard let self = self else { return }
-            //self.inspectSummary()
+            self.showInspectSummaryView()
         }
         
         // align
@@ -582,5 +582,17 @@ extension ARViewController {
             selectedSpotLabelNode.selected = false
         }
         selectedSpots.removeAll()
+    }
+    
+    private func showInspectSummaryView() {
+        let summaryView = InspectSummaryView(frame: .zero)
+        view.addSubview(summaryView)
+        
+        summaryView.updateUI(with: self.spotWeldList)
+        
+        summaryView.snp.makeConstraints { make in
+            make.center.equalTo(self.view)
+            make.size.equalTo(CGSize(width: UIScreen.main.bounds.width - 100, height: 350))
+        }
     }
 }
