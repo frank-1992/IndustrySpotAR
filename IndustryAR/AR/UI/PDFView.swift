@@ -142,7 +142,6 @@ class PDFView: UIView {
     private lazy var screenshotView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.image = UIImage(named: "1")
         return view
     }()
     

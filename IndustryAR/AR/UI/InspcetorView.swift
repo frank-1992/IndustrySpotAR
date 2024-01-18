@@ -19,6 +19,8 @@ class InspcetorView: UIView {
     var screenshotAction: (() -> Void)?
     
     var changedSpotWeldModel: ((SpotWeld) -> Void)?
+    
+    var propertyView: SpotPropertyView?
 
     private lazy var inspectViewTitle: UILabel = {
         let label = UILabel()
@@ -354,6 +356,23 @@ extension InspcetorView: UITableViewDelegate, UITableViewDataSource {
             if let index = self.selectedSpots.firstIndex(where: { $0.labelNo == spotWeldModel.labelNo }) {
                 self.selectedSpots[index] = spotWeldModel
                 self.changedSpotWeldModel?(spotWeldModel)
+            }
+        }
+        cell?.currentSpotWeldPropertyClosure = { [weak self] spotWeldModel in
+            guard let self = self else { return }
+            if let propertyView = self.propertyView {
+                propertyView.isHidden = false
+                propertyView.updateWith(spotWeldModel: spotWeldModel)
+            } else {
+                let propertyView = SpotPropertyView(frame: .zero, spotWeldModel: spotWeldModel)
+                self.superview?.addSubview(propertyView)
+                
+                propertyView.snp.makeConstraints { make in
+                    make.center.equalTo(self)
+                    make.size.equalTo(CGSize(width: 300, height: 200))
+                }
+                
+                self.propertyView = propertyView
             }
         }
         return cell ?? UITableViewCell()

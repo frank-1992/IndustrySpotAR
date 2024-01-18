@@ -10,6 +10,7 @@ import UIKit
 class InspectorStatusTableViewCell: UITableViewCell {
 
     var currentSpotWeldStatusClosure: ((SpotWeld) -> Void)?
+    var currentSpotWeldPropertyClosure: ((SpotWeld) -> Void)?
     
     private var previousSelectedButton: UIButton?
     private var spotWeldModel: SpotWeld?
@@ -259,6 +260,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
     
     @objc
     private func detailButtonAction(_ sender: UIButton) {
-        
+        if let spotWeldModel = spotWeldModel {
+            currentSpotWeldPropertyClosure?(spotWeldModel)
+        }
     }
 }
