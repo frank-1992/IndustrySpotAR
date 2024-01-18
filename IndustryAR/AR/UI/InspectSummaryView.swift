@@ -9,6 +9,8 @@ import UIKit
 
 class InspectSummaryView: UIView {
 
+    private let bgAlpha: CGFloat = 0.7
+    
     private lazy var inspectSummaryViewTitle: UILabel = {
         let label = UILabel()
         label.text = "Inspect Summary"
@@ -56,7 +58,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -67,7 +69,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -78,7 +80,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -89,7 +91,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -100,7 +102,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -111,7 +113,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -122,7 +124,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -133,7 +135,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -144,7 +146,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -155,7 +157,7 @@ class InspectSummaryView: UIView {
         label.textColor = .black
         label.layer.borderWidth = 1
         label.layer.borderColor = UIColor.white.cgColor
-        label.backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
+        label.backgroundColor = SSColorWithHex(0xc0ebd7, bgAlpha)
         return label
     }()
     
@@ -170,7 +172,7 @@ class InspectSummaryView: UIView {
     }
     
     private func setupSubviews() {
-        backgroundColor = SSColorWithHex(0x00e09e, 0.8)
+        backgroundColor = SSColorWithHex(0x00e09e, bgAlpha)
         
         addSubview(backButton)
         backButton.snp.makeConstraints { make in
