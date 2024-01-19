@@ -282,15 +282,6 @@ extension ARViewController {
                 markerRoot?.addChildNode(labelNode)
                 spotLabelNodes.append(labelNode)
                 
-                let ringNode = SCNRingNode()
-                ringNode.position = position
-                let normalDirection = spotModel.weldNormal
-                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
-                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
-                ringNode.orientation = rotation
-                markerRoot?.addChildNode(ringNode)
-                ringNodes.append(ringNode)
-                
                 if CheckingStatus(rawValue: spotModel.status) != .unInspected {
                     let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status, number: number)
                     flagNode.position = position
@@ -332,12 +323,12 @@ extension ARViewController {
             for spotLabelNode in self.spotLabelNodes {
                 spotLabelNode.isHidden = false
             }
-            for spotFlagNode in self.spotFlagNodes {
-                spotFlagNode.isHidden = false
-            }
-            for ringNode in self.ringNodes {
-                ringNode.isHidden = false
-            }
+//            for spotFlagNode in self.spotFlagNodes {
+//                spotFlagNode.isHidden = false
+//            }
+//            for ringNode in self.ringNodes {
+//                ringNode.isHidden = false
+//            }
         }
     }
     
@@ -345,12 +336,12 @@ extension ARViewController {
         for spotLabelNode in self.spotLabelNodes {
             spotLabelNode.isHidden = true
         }
-        for spotFlagNode in self.spotFlagNodes {
-            spotFlagNode.isHidden = true
-        }
-        for ringNode in self.ringNodes {
-            ringNode.isHidden = true
-        }
+//        for spotFlagNode in self.spotFlagNodes {
+//            spotFlagNode.isHidden = true
+//        }
+//        for ringNode in self.ringNodes {
+//            ringNode.isHidden = true
+//        }
     }
     
     func inspectAction() {
@@ -400,16 +391,24 @@ extension ARViewController {
         }
         
         for spotLabelNode in self.selectedSpotLabelNodes {
-            spotLabelNode.setSelected()
+            spotLabelNode.setSelected(selected: true)
         }
         
-        inspcetorView?.closeAction = {
+        inspcetorView?.closeAction = { [weak self] in
+            guard let self = self else { return }
             UIView.animate(withDuration: 0.25) {
                 self.inspcetorView?.alpha = 0
             } completion: { _ in
                 self.inspcetorView?.removeFromSuperview()
                 self.inspcetorView = nil
             }
+            for spotLabelNode in self.spotLabelNodes {
+                spotLabelNode.setSelected(selected: false)
+            }
+            self.selectedSpots.removeAll()
+            self.hideSpotLabels()
+            UserDefaults.isLabelDisplay = false
+            self.bottomMenuView.setHideIcon()
         }
         
         inspcetorView?.changedSpotWeldModel = { [weak self] spotWeldModel in

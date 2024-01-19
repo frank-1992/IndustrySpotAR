@@ -67,7 +67,7 @@ extension ARViewController {
             if let spotLabelNode = tapNode.parent as? SCNLabelNode,
                let tapNodeName = tapNode.name,
                tapNodeName.contains("spotLabelPanel") {
-                spotLabelNode.setSelected()
+                spotLabelNode.gestureSelected()
                 if let currentrSelectedSpot = spotWeldList.first(where: { $0.labelNo == spotLabelNode.number }) {
                     selectedSpots.append(currentrSelectedSpot)
                     selectedSpotLabelNodes.append(spotLabelNode)

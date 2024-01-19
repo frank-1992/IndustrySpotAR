@@ -264,6 +264,13 @@ class ARViewController: UIViewController {
     var selectedSpots: [SpotWeld] = [SpotWeld]() {
         didSet {
             selectedSpots = selectedSpots.sorted { $0.labelNo < $1.labelNo }
+            var newSelectedSpots = [SpotWeld]()
+            for selectedSpot in selectedSpots {
+                if !newSelectedSpots.contains(where: { $0.labelNo == selectedSpot.labelNo }) {
+                    newSelectedSpots.append(selectedSpot)
+                }
+            }
+            selectedSpots = newSelectedSpots
         }
     }
     
@@ -869,6 +876,20 @@ class ARViewController: UIViewController {
                         }
                     }
                 }
+                
+                for spotModel in spotWeldList {
+                    let number = spotModel.labelNo
+                    let position = spotModel.weldPoint
+                    let ringNode = SCNRingNode()
+                    ringNode.position = position
+                    let normalDirection = spotModel.weldNormal
+                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                    ringNode.orientation = rotation
+                    markerRoot?.addChildNode(ringNode)
+                    ringNodes.append(ringNode)
+                }
+                
                 if UserDefaults.isLabelDisplay {
                     self.showSpotLabels()
                 }

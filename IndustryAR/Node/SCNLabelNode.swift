@@ -169,7 +169,16 @@ class SCNLabelNode: SCNNode {
         circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
     }
     
-    public func setSelected() {
+    public func setSelected(selected: Bool) {
+        guard checkStatus == .unInspected else { return }
+        if selected {
+            circleNode.geometry?.materials.first?.diffuse.contents = UIColor.red
+        } else {
+            circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
+        }
+    }
+    
+    public func gestureSelected() {
         guard checkStatus == .unInspected else { return }
         selected = !selected
         if selected {

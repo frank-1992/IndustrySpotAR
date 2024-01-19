@@ -235,6 +235,11 @@ class BottomMenuView: UIView {
         autoSettingClosure?(sender)
     }
     
+    @objc
+    public func setHideIcon() {
+        labelDisplayHideButton.setBackgroundImage(UIImage(named: "biaoqian"), for: .normal)
+    }
+    
     /*
     @objc
     private func alignModel() {
