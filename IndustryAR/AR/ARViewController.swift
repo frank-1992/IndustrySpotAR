@@ -294,13 +294,15 @@ class ARViewController: UIViewController {
             // show save tip window
             let alert = UIAlertController(title: save_window_tip.localizedString(), message: "", preferredStyle: UIAlertController.Style.alert)
             
-            alert.addAction(UIAlertAction(title: cancel.localizedString(), style: UIAlertAction.Style.default, handler: { _ in
+            alert.addAction(UIAlertAction(title: cancel.localizedString(), style: UIAlertAction.Style.default, handler: { [weak self] _ in
+                guard let self = self else { return }
                 //cancel Action
                 self.navigationController?.popViewController(animated: true)
             }))
             alert.addAction(UIAlertAction(title: save.localizedString(),
                                           style: UIAlertAction.Style.default,
-                                          handler: {(_: UIAlertAction!) in
+                                          handler: {[weak self] _ in
+                guard let self = self else { return }
                 //save action
                 self.saveScene(true)
             }))
@@ -309,6 +311,16 @@ class ARViewController: UIViewController {
         
         //visionLibSDK?.shutDown()
         //bShutdowning = true
+        
+        
+    }
+    
+    private func releaseScene() {
+        sceneView.scene?.rootNode.removeFromParentNode()
+        sceneView.removeFromSuperview()
+        assetModel = nil
+        historyModel = nil
+        recorder = nil
     }
     
     override func viewDidLoad() {
@@ -460,6 +472,7 @@ class ARViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
         //ARSCNView_2023/08/23 ----- sceneView.session.pause()
+        releaseScene()
     }
     
     func resetTracking() {
@@ -808,7 +821,6 @@ class ARViewController: UIViewController {
         if let assetModel = assetModel {
             let usdzFiles = assetModel.usdzFilePaths
             let scnFiles = assetModel.scnFilePaths
-            let spotJsonFilePaths = assetModel.spotJsonFilePaths
             if !usdzFiles.isEmpty {
                 for usdzFile in usdzFiles {
                     
@@ -830,71 +842,49 @@ class ARViewController: UIViewController {
                 }
             }
             
-            if !spotJsonFilePaths.isEmpty {
-                for spotJsonFile in spotJsonFilePaths {
-                    let spotJsonFileURL = spotJsonFile
-                    if spotJsonFileURL.isFileURL,
-                       let spotJsonFileString = try? String(contentsOf: spotJsonFileURL),
-                       let data = spotJsonFileString.data(using: .utf8),
-                       //let couponData = try JSONSerialization.jsonObject(with: data!, options: JSONSerialization.ReadingOptions.allowFragments) as! [Any] //Any型にキャスト
-                       //let spotList = try? JSONSerialization.jsonObject(with: data, options: []) as! [String: Any] {
-                       let spotList = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
-                       let spots = spotList["SpotList"] as! [Any]
-                        
-                        for spot in spots {
-                            let spotDictionary = spot as? [String: Any]
-                            let labelNo = spotDictionary? ["LabelNo"] as? Int
-                            let status = spotDictionary? ["Status"] as? String
-                            let pointID = spotDictionary? ["PointID"] as? String
-                            let weldPoint = spotDictionary? ["WeldPoint"] as? Array<Double>
-                            let weldNormal = spotDictionary? ["WeldNormal"] as? Array<Double>
-                            let partNumbers = spotDictionary? ["PartNumbers"] as? Array<String>
-                            
-                            let spotWeld: SpotWeld = SpotWeld()
-                            
-                            spotWeld.labelNo = labelNo!;
-                            
-                            spotWeld.status = status!;
-                            
-                            spotWeld.pointID = pointID!;
-                            
-                            spotWeld.weldPoint.x = Float(weldPoint![0])
-                            spotWeld.weldPoint.y = Float(weldPoint![1])
-                            spotWeld.weldPoint.z = Float(weldPoint![2])
-                            
-                            spotWeld.weldNormal.x = Float(weldNormal![0])
-                            spotWeld.weldNormal.y = Float(weldNormal![1])
-                            spotWeld.weldNormal.z = Float(weldNormal![2])
-                            
-                            if !partNumbers!.isEmpty {
-                                for partNumber in partNumbers! {
-                                    spotWeld.partNumbers.append(partNumber)
-                                }
-                            }
-                            
-                            spotWeldList.append(spotWeld)
+            var spotJsonFileString = ""
+            if let totalResultJsonFilePath = assetModel.totalResultJsonFilePath {
+                spotJsonFileString = try! String(contentsOf: totalResultJsonFilePath)
+            } else if let originSpotJsonFilePath = assetModel.originSpotJsonFilePath {
+                spotJsonFileString = try! String(contentsOf: originSpotJsonFilePath)
+            }
+            if !spotJsonFileString.isEmpty,
+               let data = spotJsonFileString.data(using: .utf8),
+               let spotList = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+               let spots = spotList["SpotList"] as? [Any] {
+                for spot in spots {
+                    let spotDictionary = spot as? [String: Any]
+                    let labelNo = spotDictionary? ["LabelNo"] as? Int
+                    let status = spotDictionary? ["Status"] as? String
+                    let pointID = spotDictionary? ["PointID"] as? String
+                    let weldPoint = spotDictionary? ["WeldPoint"] as? Array<Double>
+                    let weldNormal = spotDictionary? ["WeldNormal"] as? Array<Double>
+                    let partNumbers = spotDictionary? ["PartNumbers"] as? Array<String>
+                    
+                    let spotWeld: SpotWeld = SpotWeld()
+                    
+                    spotWeld.labelNo = labelNo!;
+                    
+                    spotWeld.status = status!;
+                    
+                    spotWeld.pointID = pointID!;
+                    
+                    spotWeld.weldPoint.x = Float(weldPoint![0])
+                    spotWeld.weldPoint.y = Float(weldPoint![1])
+                    spotWeld.weldPoint.z = Float(weldPoint![2])
+                    
+                    spotWeld.weldNormal.x = Float(weldNormal![0])
+                    spotWeld.weldNormal.y = Float(weldNormal![1])
+                    spotWeld.weldNormal.z = Float(weldNormal![2])
+                    
+                    if !partNumbers!.isEmpty {
+                        for partNumber in partNumbers! {
+                            spotWeld.partNumbers.append(partNumber)
                         }
                     }
-                }
-                
-                for spotModel in spotWeldList {
-                    let number = spotModel.labelNo
-                    let position = spotModel.weldPoint
-                    let ringNode = SCNRingNode()
-                    ringNode.position = position
-                    let normalDirection = spotModel.weldNormal
-                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
-                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
-                    ringNode.orientation = rotation
-                    markerRoot?.addChildNode(ringNode)
-                    ringNodes.append(ringNode)
-                }
-                
-                if UserDefaults.isLabelDisplay {
-                    self.showSpotLabels()
+                    spotWeldList.append(spotWeld)
                 }
             }
-            
         } else if let historyModel = historyModel {
             guard let scnFileURL = historyModel.fileSCNPath else {
                 return
@@ -980,6 +970,39 @@ class ARViewController: UIViewController {
         if(modelRootNode.name == "ModelRoot") {
             modelRootNode.isHidden = false
             ShapeSetting.isModelVisible = true
+        }
+        
+        for spotWeld in spotWeldList {
+            let number = spotWeld.labelNo
+            let position = spotWeld.weldPoint
+            let ringNode = SCNRingNode()
+            ringNode.position = position
+            let normalDirection = spotWeld.weldNormal
+            let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+            let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+            ringNode.orientation = rotation
+            markerRoot?.addChildNode(ringNode)
+            ringNodes.append(ringNode)
+            
+            if CheckingStatus(rawValue: spotWeld.status) != .unInspected {
+                let flagNode = SCNSpotFlagNode(checkingStatus: spotWeld.status, number: number)
+                flagNode.position = position
+                let normalDirection = spotWeld.weldNormal
+                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
+                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
+                flagNode.orientation = rotation
+                markerRoot?.addChildNode(flagNode)
+                spotFlagNodes.append(flagNode)
+                
+                if !spotLabelNodes.isEmpty {
+                    let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
+                    spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotWeld.status))
+                }
+            }
+        }
+        
+        if UserDefaults.isLabelDisplay {
+            self.showSpotLabels()
         }
     }
     
@@ -1108,6 +1131,7 @@ class ARViewController: UIViewController {
     }
     
     deinit {
+        sceneView.scene?.rootNode.removeFromParentNode()
         sceneView.removeFromSuperview()
         assetModel = nil
         historyModel = nil

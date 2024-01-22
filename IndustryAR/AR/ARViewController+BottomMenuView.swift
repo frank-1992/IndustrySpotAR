@@ -237,8 +237,8 @@ extension ARViewController {
         }
         
         // save with name
-        textInputView.confirmTextClosure = { [weak self] name in
-            guard let self = self else { return }
+        textInputView.confirmTextClosure = { [weak self, weak textInputView] name in
+            guard let self = self, let textInputView = textInputView else { return }
             let fileName = name
             let dirURL = historyPath.appendingPathComponent(fileName, isDirectory: true)
             var isDirectory: ObjCBool = ObjCBool(false)
@@ -279,56 +279,14 @@ extension ARViewController {
                 labelNode.constraints = [constraint]
                 labelNode.position = SCNVector3(x: position.x, y: position.y + 0.05, z: position.z)//position
                 labelNode.renderingOrder = 100
+                labelNode.changeCheckStatus(with: CheckingStatus(rawValue: spotModel.status))
                 markerRoot?.addChildNode(labelNode)
                 spotLabelNodes.append(labelNode)
-                
-                if CheckingStatus(rawValue: spotModel.status) != .unInspected {
-                    let flagNode = SCNSpotFlagNode(checkingStatus: spotModel.status, number: number)
-                    flagNode.position = position
-                    let normalDirection = spotModel.weldNormal
-                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
-                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
-                    flagNode.orientation = rotation
-                    markerRoot?.addChildNode(flagNode)
-                    spotFlagNodes.append(flagNode)
-                    
-                    if !spotLabelNodes.isEmpty {
-                        let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
-                        spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotModel.status))
-                    }
-                }
             }
-            
-//            for spotWeldModel in self.spotWeldList {
-//                let position = spotWeldModel.weldPoint
-//                let number = spotWeldModel.labelNo
-//                if CheckingStatus(rawValue: spotWeldModel.status) != .unInspected {
-//                    let flagNode = SCNSpotFlagNode(checkingStatus: spotWeldModel.status, number: number)
-//                    flagNode.position = position
-//                    let normalDirection = spotWeldModel.weldNormal
-//                    let upDirection = SCNVector3(x: 0, y: 1, z: 0)
-//                    let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
-//                    flagNode.orientation = rotation
-//                    markerRoot?.addChildNode(flagNode)
-//                    spotFlagNodes.append(flagNode)
-//                    
-//                    if !spotLabelNodes.isEmpty {
-//                        let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
-//                        spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotWeldModel.status))
-//                    }
-//                }
-//            }
-            
         } else {
             for spotLabelNode in self.spotLabelNodes {
                 spotLabelNode.isHidden = false
             }
-//            for spotFlagNode in self.spotFlagNodes {
-//                spotFlagNode.isHidden = false
-//            }
-//            for ringNode in self.ringNodes {
-//                ringNode.isHidden = false
-//            }
         }
     }
     
@@ -336,34 +294,9 @@ extension ARViewController {
         for spotLabelNode in self.spotLabelNodes {
             spotLabelNode.isHidden = true
         }
-//        for spotFlagNode in self.spotFlagNodes {
-//            spotFlagNode.isHidden = true
-//        }
-//        for ringNode in self.ringNodes {
-//            ringNode.isHidden = true
-//        }
     }
     
     func inspectAction() {
-//        for spotWeldModel in self.spotWeldList {
-//            let position = spotWeldModel.weldPoint
-//            let number = spotWeldModel.labelNo
-//            if CheckingStatus(rawValue: spotWeldModel.status) != .unInspected {
-//                let flagNode = SCNSpotFlagNode(checkingStatus: spotWeldModel.status, number: number)
-//                flagNode.position = position
-//                let normalDirection = spotWeldModel.weldNormal
-//                let upDirection = SCNVector3(x: 0, y: 1, z: 0)
-//                let rotation = SCNQuaternion(from: upDirection, to: normalDirection)
-//                flagNode.orientation = rotation
-//                markerRoot?.addChildNode(flagNode)
-//                spotFlagNodes.append(flagNode)
-//                
-//                if !spotLabelNodes.isEmpty {
-//                    let spotLabelNode = self.spotLabelNodes.first(where: { $0.number == number })
-//                    spotLabelNode?.changeCheckStatus(with: CheckingStatus(rawValue: spotWeldModel.status))
-//                }
-//            }
-//        }
         // show dialog
         if selectedSpotLabelNodes.isEmpty {
             ProgressHUD.failed(no_selected_labelNode.localizedString(), delay: 1.0)
@@ -374,20 +307,27 @@ extension ARViewController {
     
     
     func showInspectorDialog() {
+        let viewWidth: CGFloat = 600
+        let viewHeight: CGFloat = CGFloat(354 + 44 * selectedSpots.count)
+        let centerX = UIScreen.main.bounds.width / 2
+        let centerY = UIScreen.main.bounds.height / 2
+        let originX = centerX - viewWidth / 2
+        let originY = centerY - viewHeight / 2
         if let inspcetorView = inspcetorView {
-            inspcetorView.snp.updateConstraints { make in
-                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
-            }
+//            inspcetorView.snp.updateConstraints { make in
+//                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
+//            }
+            inspcetorView.frame = CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight)
             inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots)
         } else {
-            let inspectorView = InspcetorView(frame: .zero, selectedSpots: selectedSpots)
+            let inspectorView = InspcetorView(frame: CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight), selectedSpots: selectedSpots)
             view.addSubview(inspectorView)
             self.inspcetorView = inspectorView
             
-            inspectorView.snp.makeConstraints { make in
-                make.center.equalTo(view)
-                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
-            }
+//            inspectorView.snp.makeConstraints { make in
+//                make.center.equalTo(view)
+//                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
+//            }
         }
         
         for spotLabelNode in self.selectedSpotLabelNodes {
@@ -449,8 +389,9 @@ extension ARViewController {
             }
         }
         
-        inspcetorView?.saveSpotWeldJson = { [weak self] inspectorName, time in
+        inspcetorView?.saveSpotWeldJson = { [weak self, weak inspcetorView] inspectorName, time in
             guard let self = self,
+                  let inspcetorView = inspcetorView,
                   let assetModel = assetModel else {
                 return
             }
@@ -468,17 +409,34 @@ extension ARViewController {
             
             let width = self.view.bounds.width
             let pdfView = PDFView(frame: .zero, selectedSpots: self.selectedSpots, width: width - 100, inspector: inspectorName, time: time, image: image)
-            self.view.addSubview(pdfView)
+            inspcetorView.addSubview(pdfView)
             
             pdfView.snp.makeConstraints { make in
-                make.centerX.equalTo(self.view)
-                make.bottom.equalTo(self.view.snp.top)
-                make.size.equalTo(CGSize(width: Int(width) - 100, height: 800 + 44 * self.selectedSpots.count))
+                make.centerX.equalTo(inspcetorView)
+                make.bottom.equalTo(inspcetorView.snp.top)
+                make.width.equalTo(Int(width) - 100)
+                make.height.equalTo(800 + 44 * self.selectedSpots.count)
             }
             
-            if let folderURL = assetModel.folderURL {
-                let pdfFileURL = folderURL.appendingPathComponent("\(UUID().uuidString).pdf")
-                Task {
+            // name and number
+            var inspectNumber = 1
+            var inspectJsonURL = assetModel.folderURL
+            var totalJsonURL = assetModel.folderURL
+            var pdfFileURL = assetModel.folderURL
+            if let assetModel = self.assetModel {
+                if let savedNumDic = UserDefaults.jsonNumberToStore, let number = savedNumDic[assetModel.assetName] as? Int {
+                    inspectNumber = number + 1
+                }
+                if let folderURL = assetModel.folderURL {
+                    inspectJsonURL = folderURL.appendingPathComponent("\(assetModel.assetName)_Inspect_\(inspectNumber).json")
+                    totalJsonURL = folderURL.appendingPathComponent("\(assetModel.assetName)_Result.json")
+                    pdfFileURL = folderURL.appendingPathComponent("\(assetModel.assetName)_Inspect_\(inspectNumber).pdf")
+                }
+            }
+            
+            // save pdf
+            Task {
+                if let pdfFileURL = pdfFileURL {
                     ARFileManager.shared.createPDF(from: pdfView, withImage: nil, saveTo: pdfFileURL) { isSuccess in
                         DispatchQueue.main.async {
                             pdfView.removeFromSuperview()
@@ -492,39 +450,16 @@ extension ARViewController {
                 }
             }
             
+            // selected json
+            let selectedSpotList = SpotList()
+            selectedSpotList.SpotList = self.selectedSpots
+            selectedSpotList.ScreenshotPath = assetModel.savedScreenshotURL?.relativePath
+            saveJson(jsonURL: inspectJsonURL, spotList: selectedSpotList, inspectNumber: inspectNumber, needSave: true)
+            
+            // total json
             let spotList = SpotList()
             spotList.SpotList = self.spotWeldList
-            spotList.ScreenshotPath = assetModel.savedScreenshotURL?.relativePath
-            Task {
-                do {
-                    let encoder = JSONEncoder()
-                    encoder.outputFormatting = .prettyPrinted
-                    let jsonData = try encoder.encode(spotList)
-
-                    if var jsonString = String(data: jsonData, encoding: .utf8) {
-                        jsonString = jsonString.replacingOccurrences(of: "labelNo", with: "LabelNo")
-                        jsonString = jsonString.replacingOccurrences(of: "status", with: "Status")
-                        jsonString = jsonString.replacingOccurrences(of: "pointID", with: "PointID")
-                        jsonString = jsonString.replacingOccurrences(of: "weldPoint", with: "WeldPoint")
-                        jsonString = jsonString.replacingOccurrences(of: "weldNormal", with: "WeldNormal")
-                        jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
-                        
-                        if let assetModel = self.assetModel, let url = assetModel.spotJsonFilePaths.first {
-                            ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { isSuccess in
-                                DispatchQueue.main.async {
-                                    if isSuccess {
-                                        ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
-                                    } else {
-                                        ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } catch {
-                    print("Error encoding SpotWeld array: \(error)")
-                }
-            }
+            saveJson(jsonURL: totalJsonURL, spotList: spotList, inspectNumber: inspectNumber, needSave: false)
         }
         
         inspcetorView?.screenshotAction = { [weak self] in
@@ -532,7 +467,7 @@ extension ARViewController {
             let photo = self.recorder?.photo()
             if let screenshotURL = assetModel.folderURL, let screenshot = photo {
                 Task {
-                    let imageName = UUID().uuidString
+                    let imageName = "\(assetModel.assetName)_\(UUID().uuidString)"
                     ARFileManager.shared.saveImageToPath(image: screenshot, imageName: imageName, url: screenshotURL.appendingPathComponent("ScreenShot", isDirectory: true)
                     ) { fileURL in
                         DispatchQueue.main.async {
@@ -545,6 +480,46 @@ extension ARViewController {
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    private func saveJson(jsonURL: URL?, spotList: SpotList, inspectNumber: Int, needSave: Bool) {
+        Task {
+            do {
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                let jsonData = try encoder.encode(spotList)
+
+                if var jsonString = String(data: jsonData, encoding: .utf8) {
+                    jsonString = jsonString.replacingOccurrences(of: "labelNo", with: "LabelNo")
+                    jsonString = jsonString.replacingOccurrences(of: "status", with: "Status")
+                    jsonString = jsonString.replacingOccurrences(of: "pointID", with: "PointID")
+                    jsonString = jsonString.replacingOccurrences(of: "weldPoint", with: "WeldPoint")
+                    jsonString = jsonString.replacingOccurrences(of: "weldNormal", with: "WeldNormal")
+                    jsonString = jsonString.replacingOccurrences(of: "partNumbers", with: "PartNumbers")
+                    
+                    
+                    
+                    if let url = jsonURL {
+                        ARFileManager.shared.writeJSONStringToFile(fileURL: url, jsonString: jsonString) { [weak self] isSuccess in
+                            guard let self = self, let assetModel = assetModel else { return }
+                            DispatchQueue.main.async {
+                                if needSave {
+                                    let dict = [assetModel.assetName: inspectNumber]
+                                    UserDefaults.jsonNumberToStore = dict
+                                }
+                                if isSuccess {
+                                    ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
+                                } else {
+                                    ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch {
+                print("Error encoding SpotWeld array: \(error)")
             }
         }
     }

@@ -103,7 +103,7 @@ class ARFileManager: NSObject {
             var usdzFilePaths: [URL] = []
             var scnFilePaths: [URL] = []
             
-            var spotJsonFilePaths: [URL] = []
+            var originSpotJsonFilePath: URL?
             
             var trackingModel: [URL] = []
             var configurationFile: [URL] = []
@@ -125,7 +125,12 @@ class ARFileManager: NSObject {
                 }
                 
                 if child.lastPathComponent.contains(".json") {
-                    spotJsonFilePaths.append(child)
+                    if child.relativePath.contains("Result") {
+                        asset.totalResultJsonFilePath = child
+                    }
+                    if !child.relativePath.contains("Inspect") && !child.relativePath.contains("Result") {
+                        asset.originSpotJsonFilePath = child
+                    }
                 }
                 
                 if child.lastPathComponent.contains(".obj") {
@@ -137,9 +142,6 @@ class ARFileManager: NSObject {
             }
             asset.usdzFilePaths = usdzFilePaths
             asset.scnFilePaths = scnFilePaths
-            
-            asset.spotJsonFilePaths = spotJsonFilePaths
-            
             asset.trackingModel = trackingModel
             asset.configurationFile = configurationFile
             

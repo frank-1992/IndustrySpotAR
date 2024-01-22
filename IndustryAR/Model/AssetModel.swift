@@ -14,7 +14,8 @@ public class AssetModel: NSObject {
     var usdzFilePaths: [URL] = []
     var scnFilePaths: [URL] = []
     
-    var spotJsonFilePaths: [URL] = []
+    var originSpotJsonFilePath: URL?
+    var totalResultJsonFilePath: URL?
     var savedScreenshotURL: URL?
     
     var trackingModel: [URL] = []

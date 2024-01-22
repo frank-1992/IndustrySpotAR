@@ -21,7 +21,7 @@ class InspcetorView: UIView {
     var changedSpotWeldModel: ((SpotWeld) -> Void)?
     
     var propertyView: SpotPropertyView?
-
+    
     private lazy var inspectViewTitle: UILabel = {
         let label = UILabel()
         label.text = "Spot Inspect Report"
@@ -364,13 +364,13 @@ extension InspcetorView: UITableViewDelegate, UITableViewDataSource {
                 propertyView.isHidden = false
                 propertyView.updateWith(spotWeldModel: spotWeldModel)
             } else {
-                let propertyView = SpotPropertyView(frame: .zero, spotWeldModel: spotWeldModel)
-                self.superview?.addSubview(propertyView)
                 
-                propertyView.snp.makeConstraints { make in
-                    make.center.equalTo(self)
-                    make.size.equalTo(CGSize(width: 300, height: 200))
-                }
+                let width: CGFloat = 300
+                let height: CGFloat = 200
+                let originX = self.center.x - width / 2
+                let originY = self.center.y - height / 2
+                let propertyView = SpotPropertyView(frame: CGRect(x: originX, y: originY, width: width, height: height), spotWeldModel: spotWeldModel)
+                self.superview?.superview?.addSubview(propertyView)
                 
                 self.propertyView = propertyView
             }

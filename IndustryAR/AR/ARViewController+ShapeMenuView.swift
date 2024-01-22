@@ -15,11 +15,11 @@ extension ARViewController {
         shapeMenuView.deselectShapeTypeClosure = { [weak self] function in
             guard let self = self else { return }
             self.function = function
-            if !textInputView.isHidden {
-                textInputView.isHidden = true
+            if !self.textInputView.isHidden {
+                self.textInputView.isHidden = true
                 self.sceneView.endEditing(true)
             }
-            showFunctionName()
+            self.showFunctionName()
             
             self.setDeleteFlagHiddenState(isHidden: true, completion: nil)
             if(self.bGestureRemoved)
@@ -40,7 +40,7 @@ extension ARViewController {
             guard let self = self else { return }
             self.function = function
             
-            showFunctionName()
+            self.showFunctionName()
             
             //_____VVVVVVVVVVVVVVVVVVVVVVVVVVVVV_____DIPRO_START_2023/02/09_____VVVVVVVVVVVVVVVVVVVVVVVVVVVVV_____
             if function == .line {
@@ -79,7 +79,7 @@ extension ARViewController {
             }
             
             if function == .text {
-                textInputView.isHidden = !textInputView.isHidden
+                self.textInputView.isHidden = !self.textInputView.isHidden
 //                let textInputView = TextInputView(frame: .zero)
 //                self.view.addSubview(textInputView)
 //                
@@ -88,7 +88,7 @@ extension ARViewController {
 //                    make.size.equalTo(CGSize(width: 300, height: 140))
 //                }
 //                
-                textInputView.confirmTextClosure = { content in
+                self.textInputView.confirmTextClosure = { content in
                     let text = SCNText(string: content, extrusionDepth: 0.001)
                     text.font = UIFont(name: "PingFang-SC-Regular", size: ShapeSetting.fontSize)
                     let material = SCNMaterial()
@@ -105,7 +105,7 @@ extension ARViewController {
                     self.sceneView.endEditing(true)
                 }
                 
-                textInputView.cancelClosure = {
+                self.textInputView.cancelClosure = {
                     self.shapeMenuView.resetUI()
                     
                     self.showFunctionName()

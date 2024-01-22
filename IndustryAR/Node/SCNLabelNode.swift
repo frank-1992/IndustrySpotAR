@@ -135,9 +135,12 @@ class SCNLabelNode: SCNNode {
         let circleNode = createHollowCircleNode(outerRadius: circleWidth/2 + 0.2, innerRadius: circleWidth/2 - 2, thickness: 2)
         circleNode.geometry?.firstMaterial?.writesToDepthBuffer = false
         circleNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
+        circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
         circleNode.renderingOrder = 102
         self.circleNode = circleNode
         panelNode.addChildNode(circleNode)
+        
+        self.selected = false
     }
     
     required init?(coder: NSCoder) {

@@ -13,6 +13,16 @@ extension UserDefaults {
     private static let kHasAutoShowBottomMenu = "IndustryAR-kHasAutoShow"
 //    private static let kIsTrackingOn = "IndustryAR-kIsTrackingOn"
     private static let kIsLabelDisplay = "IndustryAR-kIsLabelDisplay"
+    private static let kIsJsonNumberToStore = "IndustryAR-kIsJsonNumberToStore"
+    
+    static var jsonNumberToStore: [String: Any ]? {
+        get {
+            self.standard.dictionary(forKey: kIsJsonNumberToStore)
+        }
+        set {
+            self.standard.set(newValue, forKey: kIsJsonNumberToStore)
+        }
+    }
     
     static var hasAutoShowBottomMenu: Bool {
         get {
