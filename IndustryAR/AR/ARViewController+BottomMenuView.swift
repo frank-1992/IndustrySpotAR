@@ -464,8 +464,8 @@ extension ARViewController {
         
         inspcetorView?.screenshotAction = { [weak self] in
             guard let self = self, let assetModel = assetModel else { return }
-            let photo = self.recorder?.photo()
-            if let screenshotURL = assetModel.folderURL, let screenshot = photo {
+            let screenshot = self.sceneView.snapshot()
+            if let screenshotURL = assetModel.folderURL {
                 Task {
                     let imageName = "\(assetModel.assetName)_\(UUID().uuidString)"
                     ARFileManager.shared.saveImageToPath(image: screenshot, imageName: imageName, url: screenshotURL.appendingPathComponent("ScreenShot", isDirectory: true)

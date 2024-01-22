@@ -133,10 +133,10 @@ class ARViewController: UIViewController {
     
     public lazy var sceneView: SCNView = {
         let sceneView = SCNView(frame: view.bounds)
-        self.view = sceneView
+//        self.view = sceneView
         
         sceneView.delegate = self
-        //sceneView.automaticallyUpdatesLighting = true
+//        sceneView.automaticallyUpdatesLighting = true
         sceneView.preferredFramesPerSecond = 60
         
         sceneView.scene = SCNScene()
@@ -350,23 +350,14 @@ class ARViewController: UIViewController {
         //** visionLibSDK Setup Start-------------------------------------------------------------------------------------visionLibSDK
         
         loadARModel()
+        
         scene = sceneView.scene
-        
-        // retrieve the SCNView
-        //let scnView: SCNView = self.view;
-        let scnView = sceneView as SCNView
-        
-        // set the scene to the view
-        scnView.scene = scene;
-        
         // allows the user to manipulate the camera
-        //scnView.allowsCameraControl = true
-        
+//        sceneView.allowsCameraControl = true
         // show statistics such as fps and timing information
-        scnView.showsStatistics = false;
-        
+        sceneView.showsStatistics = false;
         // configure the view backgroundColor
-        scnView.backgroundColor = UIColor.lightGray
+        sceneView.backgroundColor = UIColor.lightGray
         
         //
         // VisionLib Initialization
@@ -456,9 +447,8 @@ class ARViewController: UIViewController {
         
         //loadARModel()
         setupUI()
-        setupRecorder()
-        
         sceneView.isPlaying = true;
+        setupRecorder()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -472,6 +462,7 @@ class ARViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
         //ARSCNView_2023/08/23 ----- sceneView.session.pause()
+        recorder?.rest()
         releaseScene()
     }
     
@@ -527,7 +518,10 @@ class ARViewController: UIViewController {
     }
     
     private func setupUI() {
-        //view.addSubview(sceneView)
+        view.addSubview(sceneView)
+        sceneView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         
         sceneView.addSubview(backButton)
         backButton.snp.makeConstraints { make in
@@ -588,12 +582,11 @@ class ARViewController: UIViewController {
 //        sceneView.prepareForRecording()
         //recorder = RecordAR(ARSceneKit: sceneView)
         
-        let scnView = sceneView as SCNView
-        recorder = RecordAR(SceneKit: scnView)
+        recorder = RecordAR(SceneKit: sceneView)
         
         recorder?.delegate = self
         recorder?.onlyRenderWhileRecording = false
-        recorder?.contentMode = .aspectFill
+        recorder?.contentMode = .aspectFit
         recorder?.enableAdjustEnvironmentLighting = true
         recorder?.inputViewOrientations = [.portrait]
         recorder?.deleteCacheWhenExported = false
@@ -1060,7 +1053,7 @@ class ARViewController: UIViewController {
             //cadModelRoot1.position = SCNVector3(x: 0, y: -cy, z: -0.5)
             //temp_2023/12/03  cadModelRoot1.position = SCNVector3(x: 0.0, y:  -height, z:  -0.5)
             
-            sceneView.scene!.rootNode.addChildNode(cadModelRoot1)
+            sceneView.scene?.rootNode.addChildNode(cadModelRoot1)
             
             //test line color
             /*
