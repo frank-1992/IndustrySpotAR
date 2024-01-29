@@ -346,7 +346,9 @@ extension ARViewController {
                 spotLabelNode.setSelected(selected: false)
             }
             self.selectedSpots.removeAll()
+            self.selectedSpotLabelNodes.removeAll()
             self.hideSpotLabels()
+            self.screenshotPaths.removeAll()
             UserDefaults.isLabelDisplay = false
             self.bottomMenuView.setHideIcon()
         }
@@ -403,8 +405,8 @@ extension ARViewController {
             
             // pdf
             var image: UIImage?
-            if let screenshotURL = assetModel.savedScreenshotURL {
-                image = UIImage(contentsOfFile: screenshotURL.relativePath)
+            if let firstScreenshot = self.screenshotPaths.first {
+                image = UIImage(contentsOfFile: firstScreenshot)
             }
             
             let width = self.view.bounds.width
@@ -437,7 +439,17 @@ extension ARViewController {
             // save pdf
             Task {
                 if let pdfFileURL = pdfFileURL {
-                    ARFileManager.shared.createPDF(from: pdfView, withImage: nil, saveTo: pdfFileURL) { isSuccess in
+                    var pdfImagePaths = self.screenshotPaths
+                    var pdfImages: [UIImage] = []
+                    pdfImagePaths.remove(at: 0)
+                    
+                    for pdfImagePath in pdfImagePaths {
+                        if let image = UIImage(contentsOfFile: pdfImagePath) {
+                            pdfImages.append(image)
+                        }
+                    }
+                    
+                    ARFileManager.shared.createPDF(from: pdfView, withImages: pdfImages, saveTo: pdfFileURL) { isSuccess in
                         DispatchQueue.main.async {
                             pdfView.removeFromSuperview()
                             if isSuccess {
@@ -453,12 +465,13 @@ extension ARViewController {
             // selected json
             let selectedSpotList = SpotList()
             selectedSpotList.SpotList = self.selectedSpots
-            selectedSpotList.ScreenshotPath = assetModel.savedScreenshotURL?.relativePath
+            selectedSpotList.ScreenshotPaths = self.screenshotPaths
             saveJson(jsonURL: inspectJsonURL, spotList: selectedSpotList, inspectNumber: inspectNumber, needSave: true)
             
             // total json
             let spotList = SpotList()
             spotList.SpotList = self.spotWeldList
+            selectedSpotList.ScreenshotPaths = self.screenshotPaths
             saveJson(jsonURL: totalJsonURL, spotList: spotList, inspectNumber: inspectNumber, needSave: false)
         }
         
@@ -471,8 +484,8 @@ extension ARViewController {
                     ARFileManager.shared.saveImageToPath(image: screenshot, imageName: imageName, url: screenshotURL.appendingPathComponent("ScreenShot", isDirectory: true)
                     ) { fileURL in
                         DispatchQueue.main.async {
-                            if fileURL != nil {
-                                assetModel.savedScreenshotURL = fileURL
+                            if let fileURL = fileURL {
+                                self.screenshotPaths.append(fileURL.relativePath)
                                 ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
                             } else {
                                 ProgressHUD.failed(save_fail.localizedString(), delay: 1.0)

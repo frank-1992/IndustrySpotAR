@@ -132,15 +132,18 @@ class SCNLabelNode: SCNNode {
         
         
         let circleWidth = CGFloat(panelNode.boundingBox.max.x - panelNode.boundingBox.min.x)
-        let circleNode = createHollowCircleNode(outerRadius: circleWidth/2 + 0.2, innerRadius: circleWidth/2 - 2, thickness: 2)
+        let circleNode = createHollowCircleNode(outerRadius: circleWidth/2 + 2, innerRadius: circleWidth/2 - 2, thickness: 2)
         circleNode.geometry?.firstMaterial?.writesToDepthBuffer = false
         circleNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
         circleNode.renderingOrder = 102
+        circleNode.name = "spotLabelPanel\(text)"
         self.circleNode = circleNode
         panelNode.addChildNode(circleNode)
         
         self.selected = false
+        
+        self.name = "spotLabelPanel\(text)"
     }
     
     required init?(coder: NSCoder) {
@@ -163,7 +166,7 @@ class SCNLabelNode: SCNNode {
         case .ok:
             panelNode.geometry?.materials.first?.diffuse.contents = UIColor.blue
         case .ng:
-            panelNode.geometry?.materials.first?.diffuse.contents = UIColor.red
+            panelNode.geometry?.materials.first?.diffuse.contents = SSColorWithHex(0xFF4500, 0.9)//UIColor.red
         case .pending:
             panelNode.geometry?.materials.first?.diffuse.contents = UIColor.yellow
         case .unInspected:
@@ -175,7 +178,7 @@ class SCNLabelNode: SCNNode {
     public func setSelected(selected: Bool) {
         guard checkStatus == .unInspected else { return }
         if selected {
-            circleNode.geometry?.materials.first?.diffuse.contents = UIColor.red
+            circleNode.geometry?.materials.first?.diffuse.contents = SSColorWithHex(0xFF1493, 1)
         } else {
             circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
         }
@@ -185,7 +188,7 @@ class SCNLabelNode: SCNNode {
         guard checkStatus == .unInspected else { return }
         selected = !selected
         if selected {
-            circleNode.geometry?.materials.first?.diffuse.contents = UIColor.red
+            circleNode.geometry?.materials.first?.diffuse.contents = SSColorWithHex(0xFF1493, 1)
         } else {
             circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
         }

@@ -11,7 +11,7 @@ import SceneKit
 
 public class SpotList: Codable {
     var SpotList: [SpotWeld] = []
-    var ScreenshotPath: String?
+    var ScreenshotPaths: [String] = []
 }
 
 public class SpotWeld: Codable {

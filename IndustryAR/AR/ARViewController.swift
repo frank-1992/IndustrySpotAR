@@ -276,6 +276,8 @@ class ARViewController: UIViewController {
     
     var inspcetorView: InspcetorView?
     
+    var screenshotPaths: [String] = []
+    
     // uninspected ringNodes
     var ringNodes: [SCNNode] = [SCNNode]()
     
@@ -316,6 +318,10 @@ class ARViewController: UIViewController {
     }
     
     private func releaseScene() {
+        selectedSpots.removeAll()
+        selectedSpotLabelNodes.removeAll()
+        spotLabelNodes.removeAll()
+        spotFlagNodes.removeAll()
         sceneView.scene?.rootNode.removeFromParentNode()
         sceneView.removeFromSuperview()
         assetModel = nil

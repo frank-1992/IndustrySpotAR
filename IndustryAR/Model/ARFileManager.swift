@@ -244,7 +244,7 @@ class ARFileManager: NSObject {
         }
     }
     
-    public func createPDF(from view: UIView, withImage image: UIImage?, saveTo fileURL: URL, completion: @escaping (_ isSuccess: Bool) -> Void) {
+    public func createPDF(from view: UIView, withImages images: [UIImage]?, saveTo fileURL: URL, completion: @escaping (_ isSuccess: Bool) -> Void) {
         let renderer = UIGraphicsPDFRenderer(bounds: view.bounds)
             do {
                 try renderer.writePDF(to: fileURL) { context in
@@ -252,10 +252,17 @@ class ARFileManager: NSObject {
                     view.layer.render(in: context.cgContext)
 
                     // Additional page: Draw an image
-                    if let image = image {
-                        context.beginPage()
-                        let imageRect = CGRect(x: 0, y: 0, width: context.pdfContextBounds.width, height: context.pdfContextBounds.height)
-                        image.draw(in: imageRect)
+                    var pageIndex = 0
+                    
+                    if let images = images {
+                        for image in images {
+                            context.beginPage()
+                            let ratio = image.size.width / image.size.height
+                            let contextWidth =  context.pdfContextBounds.width
+                            let contextHeight = contextWidth / ratio
+                            let imageRect = CGRect(x: 0, y: 0, width: contextWidth, height: contextHeight)
+                            image.draw(in: imageRect)
+                        }
                     }
                 }
                 completion(true)
