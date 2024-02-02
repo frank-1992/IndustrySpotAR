@@ -298,7 +298,7 @@ class PDFView: UIView {
             make.left.equalTo(self).offset(100)
             make.right.equalTo(self).offset(-100)
             make.top.equalTo(tableView.snp.bottom).offset(10)
-            make.bottom.equalTo(self).offset(-20)
+            make.bottom.equalTo(self).offset(-40)
         }
         
         inspectorTitle.text = "Inspector: \(inspector)"

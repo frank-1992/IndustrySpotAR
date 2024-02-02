@@ -244,24 +244,93 @@ class ARFileManager: NSObject {
         }
     }
     
-    public func createPDF(from view: UIView, withImages images: [UIImage]?, saveTo fileURL: URL, completion: @escaping (_ isSuccess: Bool) -> Void) {
+    private func getStringSize(text: String, font: UIFont) -> CGSize {
+        let label = UILabel()
+        label.text = text
+        label.font = font
+        
+        let fittingSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
+        let requiredSize = label.sizeThatFits(fittingSize)
+        return requiredSize
+    }
+    
+    public func createPDF(from view: UIView,
+                          withImages images: [UIImage]?,
+                          inspectorName: String,
+                          date: String,
+                          saveTo fileURL: URL,
+                          completion: @escaping (_ isSuccess: Bool) -> Void) {
         let renderer = UIGraphicsPDFRenderer(bounds: view.bounds)
             do {
                 try renderer.writePDF(to: fileURL) { context in
                     context.beginPage()
                     view.layer.render(in: context.cgContext)
 
-                    // Additional page: Draw an image
-                    var pageIndex = 0
-                    
+                    // number
                     if let images = images {
-                        for image in images {
+                        let numberOut = "1/\(images.count + 1)"
+                        let numberOutFont = UIFont.systemFont(ofSize: 14)
+                        let numberOutAttributes: [NSAttributedString.Key: Any] = [.font: numberOutFont, .foregroundColor: UIColor.black]
+                        let numberOutSize = self.getStringSize(text: numberOut, font: numberOutFont)
+                        let numberOutRect = CGRect(x: view.bounds.width - 20 - numberOutSize.width, y: view.bounds.height - 20 - numberOutSize.height, width: numberOutSize.width, height: numberOutSize.height)
+                        let nsNumber = NSString(string: numberOut)
+                        nsNumber.draw(in: numberOutRect, withAttributes: numberOutAttributes)
+                    }
+                    
+                        
+                    if let images = images {
+                        for (index, image) in images.enumerated() {
                             context.beginPage()
+                            
+                            // set bg color
+                            let container = UIView(frame: context.pdfContextBounds)
+                            container.backgroundColor = SSColorWithHex(0xf0fcff, 1)
+                            container.layer.render(in: context.cgContext)
+                        
+                            // title
+                            let title = "Spot Inspect Report"
+                            let font = UIFont.systemFont(ofSize: 24, weight: .medium)
+                            let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
+                            let titleSize = getStringSize(text: title, font: font)
+                            let titleRect = CGRect(x: view.bounds.width / 2 - titleSize.width / 2, y: 20, width: titleSize.width, height: titleSize.height)
+                            let nsTitle = NSString(string: title)
+                            nsTitle.draw(in: titleRect, withAttributes: attributes)
+                            
+                            // inspector
+                            let inspector = "Inspector: \(inspectorName)"
+                            let inspectorFont = UIFont.systemFont(ofSize: 20, weight: .regular)
+                            let inspectorAttributes: [NSAttributedString.Key: Any] = [.font: inspectorFont, .foregroundColor: UIColor.black]
+                            let inspectorSize = self.getStringSize(text: inspector, font: inspectorFont)
+                            let inspectorRect = CGRect(x: 20, y: 20 + 20 + titleSize.height, width: inspectorSize.width, height: inspectorSize.height)
+                            let nsInspector = NSString(string: inspector)
+                            nsInspector.draw(in: inspectorRect, withAttributes: inspectorAttributes)
+                            
+                            let date = "Inspect Date: \(date)"
+                            let dateFont = UIFont.systemFont(ofSize: 20, weight: .regular)
+                            let dateAttributes: [NSAttributedString.Key: Any] = [.font: dateFont, .foregroundColor: UIColor.black]
+                            let dateSize = self.getStringSize(text: date, font: dateFont)
+                            let dateRect = CGRect(x: view.bounds.width - 20 - dateSize.width, y: 20 + 20 + dateSize.height, width: dateSize.width, height: dateSize.height)
+                            let nsDate = NSString(string: date)
+                            nsDate.draw(in: dateRect, withAttributes: dateAttributes)
+
+
                             let ratio = image.size.width / image.size.height
-                            let contextWidth =  context.pdfContextBounds.width
-                            let contextHeight = contextWidth / ratio
-                            let imageRect = CGRect(x: 0, y: 0, width: contextWidth, height: contextHeight)
+                            let imageY = 20 + titleSize.height + 20 + inspectorSize.height + 10
+                            let contextHeight =  context.pdfContextBounds.height - imageY - 60
+                            let contextWidth = contextHeight * ratio
+                            
+                            let imageRect = CGRect(x: (view.bounds.width - contextWidth) / 2, y: imageY, width: contextWidth, height: contextHeight)
                             image.draw(in: imageRect)
+                            
+                            // number
+                            let number = "\(index + 2)/\(images.count + 1)"
+                            let numberFont = UIFont.systemFont(ofSize: 14)
+                            let numberAttributes: [NSAttributedString.Key: Any] = [.font: numberFont, .foregroundColor: UIColor.black]
+                            let numberSize = self.getStringSize(text: number, font: numberFont)
+                            let numberRect = CGRect(x: view.bounds.width - 20 - numberSize.width, y: view.bounds.height - 20 - numberSize.height, width: numberSize.width, height: numberSize.height)
+                            let nsNumber = NSString(string: number)
+                            nsNumber.draw(in: numberRect, withAttributes: numberAttributes)
+                            
                         }
                     }
                 }

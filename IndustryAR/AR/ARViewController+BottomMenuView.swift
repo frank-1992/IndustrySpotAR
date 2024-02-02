@@ -449,7 +449,7 @@ extension ARViewController {
                         }
                     }
                     
-                    ARFileManager.shared.createPDF(from: pdfView, withImages: pdfImages, saveTo: pdfFileURL) { isSuccess in
+                    ARFileManager.shared.createPDF(from: pdfView, withImages: pdfImages, inspectorName: inspectorName, date: time, saveTo: pdfFileURL) { isSuccess in
                         DispatchQueue.main.async {
                             pdfView.removeFromSuperview()
                             if isSuccess {
