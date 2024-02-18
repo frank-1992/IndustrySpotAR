@@ -102,36 +102,18 @@ class MineViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .white
         
-        view.addSubview(nameLabel)
-        nameLabel.snp.makeConstraints { make in
-            make.top.equalTo(view).offset(300)
-            make.left.equalTo(view).offset(50)
-        }
-        
-        view.addSubview(urlTextField)
-        urlTextField.snp.makeConstraints { make in
-            make.top.equalTo(nameLabel.snp.bottom).offset(30)
-            make.left.equalTo(nameLabel)
-            make.right.equalTo(view).offset(-50)
-            make.height.equalTo(44)
-        }
-        
-        view.addSubview(progressLabel)
-        progressLabel.snp.makeConstraints { make in
-            make.left.equalTo(urlTextField)
-            make.top.equalTo(urlTextField.snp.bottom).offset(8)
-        }
         
         view.addSubview(passwordLabel)
         passwordLabel.snp.makeConstraints { make in
-            make.left.equalTo(nameLabel)
-            make.top.equalTo(urlTextField).offset(100)
+            make.centerY.equalTo(view).offset(-30)
+            make.left.equalTo(view).offset(50)
         }
         
         view.addSubview(passwordView)
         passwordView.snp.makeConstraints { make in
-            make.left.height.equalTo(urlTextField)
-            make.top.equalTo(passwordLabel.snp.bottom).offset(30)
+            make.left.equalTo(passwordLabel)
+            make.height.equalTo(44)
+            make.top.equalTo(passwordLabel.snp.bottom).offset(10)
             make.width.equalTo(200)
         }
         
@@ -149,10 +131,30 @@ class MineViewController: UIViewController {
             make.width.equalTo(30)
         }
         
+        view.addSubview(urlTextField)
+        urlTextField.snp.makeConstraints { make in
+            make.bottom.equalTo(passwordLabel.snp.top).offset(-30)
+            make.left.equalTo(passwordLabel)
+            make.right.equalTo(view).offset(-50)
+            make.height.equalTo(44)
+        }
+        
+        view.addSubview(nameLabel)
+        nameLabel.snp.makeConstraints { make in
+            make.bottom.equalTo(urlTextField.snp.top).offset(-10)
+            make.left.equalTo(view).offset(50)
+        }
+        
+        view.addSubview(progressLabel)
+        progressLabel.snp.makeConstraints { make in
+            make.left.equalTo(urlTextField)
+            make.top.equalTo(urlTextField.snp.bottom).offset(8)
+        }
+        
         view.addSubview(downloadButton)
         downloadButton.snp.makeConstraints { make in
             make.centerX.equalTo(view)
-            make.top.equalTo(passwordTextField.snp.bottom).offset(80)
+            make.top.equalTo(passwordTextField.snp.bottom).offset(50)
             make.size.equalTo(CGSize(width: 160, height: 50))
         }
     }

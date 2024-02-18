@@ -78,5 +78,15 @@ extension ChildProjectListViewController: UITableViewDelegate {
         arVC.assetModel = model
         navigationController?.pushViewController(arVC, animated: true)
     }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            // Update tableView layout based on the new size
+            self.tableView.frame = self.view.bounds
+            self.tableView.reloadData()
+        }, completion: nil)
+    }
 }
 

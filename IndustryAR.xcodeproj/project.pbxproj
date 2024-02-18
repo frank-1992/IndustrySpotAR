@@ -153,7 +153,6 @@
 		F099292B2B57CBE700557291 /* PDFTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F099292A2B57CBE700557291 /* PDFTableViewCell.swift */; };
 		F0B06C962B46ADD2004EF9E0 /* SCNSpotFlagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */; };
 		F0B06C982B46B134004EF9E0 /* SCNRingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */; };
-		F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */; };
 		F0E8F4312B4BE98A00876C2D /* InspcetorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */; };
 		F0E8F4332B4BF68900876C2D /* InspectorStatusTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */; };
 /* End PBXBuildFile section */
@@ -320,7 +319,6 @@
 		F099292A2B57CBE700557291 /* PDFTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTableViewCell.swift; sourceTree = "<group>"; };
 		F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpotFlagNode.swift; sourceTree = "<group>"; };
 		F0B06C972B46B134004EF9E0 /* SCNRingNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNRingNode.swift; sourceTree = "<group>"; };
-		F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotFactoryTool.swift; sourceTree = "<group>"; };
 		F0E8F4302B4BE98A00876C2D /* InspcetorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspcetorView.swift; sourceTree = "<group>"; };
 		F0E8F4322B4BF68900876C2D /* InspectorStatusTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectorStatusTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -504,7 +502,6 @@
 				F033BC7B299FE93D00625BAC /* JsonUtil.swift */,
 				CECCE93B296833D90098B299 /* ARUtilities.swift */,
 				CE53166A298E72C70069CC7F /* UserDefaults+Extension.swift */,
-				F0B65C742B4674E3005860EA /* SpotFactoryTool.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1011,7 +1008,6 @@
 				F033BC28299BD06600625BAC /* Updater.swift in Sources */,
 				CEDF542629AC718F00C5AC95 /* HistoryProjectListController.swift in Sources */,
 				05A2E19E29B97534003ED74B /* SCNGeometry+Extension.swift in Sources */,
-				F0B65C752B4674E3005860EA /* SpotFactoryTool.swift in Sources */,
 				F09929292B57C25F00557291 /* PDFView.swift in Sources */,
 				F033BC1A299BD06600625BAC /* VideoOutput.Error.swift in Sources */,
 				CEC519AF297A74170054AD3A /* FileModel.swift in Sources */,
@@ -1304,7 +1300,6 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1368,7 +1363,6 @@
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (

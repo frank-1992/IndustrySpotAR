@@ -9,11 +9,28 @@ import UIKit
 import ProgressHUD
 import MJRefresh
 import Popover
-let itemWidth: CGFloat = 220
 let itemHeight: CGFloat = 300
-let column: CGFloat = 3
 let containerCellID = "containerCellID"
 let historyCellID = "historyCellID"
+
+func isLandscape() -> Bool {
+    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+        let orientation = windowScene.interfaceOrientation
+        
+        switch orientation {
+        case .portrait, .portraitUpsideDown:
+            debugPrint("iPad is in Portrait orientation")
+            return false
+        case .landscapeLeft, .landscapeRight:
+            debugPrint("iPad is in Landscape orientation")
+            return true
+        default:
+            print("Unknown orientation")
+            return false
+        }
+    }
+    return false
+}
 
 class CurrentProjectListController: UIViewController {
     fileprivate var popover: Popover!
@@ -24,13 +41,16 @@ class CurrentProjectListController: UIViewController {
 
     private lazy var currentCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        let collectionViewWidth = UIScreen.main.bounds.width
+        let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
+        let space: CGFloat = 30
+        let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
         layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-        let space = (UIScreen.main.bounds.width - itemWidth * column) / (column + 1)
-        layout.minimumLineSpacing = space
+        layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = space
-        layout.sectionInset = UIEdgeInsets(top: space, left: space, bottom: space, right: space)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
-        collectionView.register(HomeContainerCell.self, forCellWithReuseIdentifier: containerCellID)
+        collectionView.register(HomeContainerCell.self, forCellWithReuseIdentifier: historyCellID)
         collectionView.delegate = self
         collectionView.dataSource = self
         return collectionView
@@ -121,7 +141,7 @@ extension CurrentProjectListController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let projectModel = projectModels[indexPath.row]
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: containerCellID, for: indexPath) as? HomeContainerCell ?? HomeContainerCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: historyCellID, for: indexPath) as? HomeContainerCell ?? HomeContainerCell()
         cell.setupUIWith(projectModel)
         cell.deleteCellClosure = { [weak self] in
             guard let self = self else { return }
@@ -153,6 +173,24 @@ extension CurrentProjectListController: UICollectionViewDelegate {
         let childVC = ChildProjectListViewController()
         childVC.projectModel = projectModel
         navigationController?.pushViewController(childVC, animated: true)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            let layout = UICollectionViewFlowLayout()
+            let collectionViewWidth = UIScreen.main.bounds.width
+            let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
+            let space: CGFloat = 30
+            let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
+            layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+            layout.minimumLineSpacing = 0
+            layout.minimumInteritemSpacing = space
+            layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+            self.currentCollectionView.setCollectionViewLayout(layout, animated: true)
+//            self.currentCollectionView.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
 }
 

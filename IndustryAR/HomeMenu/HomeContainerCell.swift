@@ -21,7 +21,7 @@ class HomeContainerCell: UICollectionViewCell {
     
     private lazy var nameLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.font = UIFont(name: "PingFang-SC-Medium", size: 24)
+        label.font = UIFont(name: "PingFang-SC-Medium", size: 18)
         label.textColor = .black
         label.textAlignment = .center
         return label
@@ -48,9 +48,10 @@ class HomeContainerCell: UICollectionViewCell {
         
         contentView.addSubview(nameLabel)
         nameLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(iconView)
             make.top.equalTo(iconView.snp.bottom).offset(5)
-            make.width.equalTo(150)
+            make.left.equalTo(contentView).offset(30)
+            make.right.equalTo(contentView).offset(-30)
+            make.height.equalTo(40)
         }
         
         contentView.addSubview(moreButton)

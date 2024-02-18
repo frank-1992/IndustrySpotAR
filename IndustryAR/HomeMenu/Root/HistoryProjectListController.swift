@@ -15,11 +15,14 @@ class HistoryProjectListController: UIViewController {
     ]
     private lazy var historyCollectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        let collectionViewWidth = UIScreen.main.bounds.width
+        let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
+        let space: CGFloat = 28
+        let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
         layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-        let space = (UIScreen.main.bounds.width - itemWidth * column) / (column + 1)
-        layout.minimumLineSpacing = space
+        layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = space
-        layout.sectionInset = UIEdgeInsets(top: space, left: space, bottom: space, right: space)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
         collectionView.register(HomeContainerCell.self, forCellWithReuseIdentifier: historyCellID)
         collectionView.delegate = self
@@ -115,5 +118,23 @@ extension HistoryProjectListController: UICollectionViewDelegate {
         let arVC = ARViewController()
         arVC.historyModel = model
         navigationController?.pushViewController(arVC, animated: true)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { context in
+            let layout = UICollectionViewFlowLayout()
+            let collectionViewWidth = UIScreen.main.bounds.width
+            let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
+            let space: CGFloat = 28
+            let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
+            layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+            layout.minimumLineSpacing = 10
+            layout.minimumInteritemSpacing = space
+            layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+            self.historyCollectionView.setCollectionViewLayout(layout, animated: true)
+//            self.currentCollectionView.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
 }
