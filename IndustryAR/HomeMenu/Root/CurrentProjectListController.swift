@@ -60,6 +60,8 @@ class CurrentProjectListController: UIViewController {
     
     private var refreshHeader = MJRefreshNormalHeader()
     
+    private var shouldAnimateLayout: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         showAllFonts()
@@ -90,6 +92,16 @@ class CurrentProjectListController: UIViewController {
                 ShapeSetting.fontNameList.append(fontName)
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        shouldAnimateLayout = true
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        shouldAnimateLayout = false
     }
     
     private func setupUI() {
@@ -178,19 +190,21 @@ extension CurrentProjectListController: UICollectionViewDelegate {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         
-        coordinator.animate(alongsideTransition: { context in
-            let layout = UICollectionViewFlowLayout()
-            let collectionViewWidth = UIScreen.main.bounds.width
-            let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
-            let space: CGFloat = 30
-            let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
-            layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
-            layout.minimumLineSpacing = 0
-            layout.minimumInteritemSpacing = space
-            layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
-            self.currentCollectionView.setCollectionViewLayout(layout, animated: true)
-//            self.currentCollectionView.collectionViewLayout.invalidateLayout()
-        }, completion: nil)
+        if shouldAnimateLayout {
+            coordinator.animate(alongsideTransition: { context in
+                let layout = UICollectionViewFlowLayout()
+                let collectionViewWidth = UIScreen.main.bounds.width
+                let numberOfItemsPerRow: CGFloat = isLandscape() ? 4 : 3
+                let space: CGFloat = 30
+                let itemWidth = (collectionViewWidth - space * (numberOfItemsPerRow + 1)) / numberOfItemsPerRow
+                layout.itemSize = CGSize(width: itemWidth, height: itemHeight)
+                layout.minimumLineSpacing = 0
+                layout.minimumInteritemSpacing = space
+                layout.sectionInset = UIEdgeInsets(top: 0, left: space, bottom: 0, right: space)
+                self.currentCollectionView.setCollectionViewLayout(layout, animated: true)
+                self.currentCollectionView.collectionViewLayout.invalidateLayout()
+            }, completion: nil)
+        }
     }
 }
 
