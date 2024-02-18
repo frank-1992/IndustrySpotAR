@@ -441,7 +441,9 @@ extension ARViewController {
                 if let pdfFileURL = pdfFileURL {
                     var pdfImagePaths = self.screenshotPaths
                     var pdfImages: [UIImage] = []
-                    pdfImagePaths.remove(at: 0)
+                    if !pdfImagePaths.isEmpty {
+                        pdfImagePaths.remove(at: 0)
+                    }
                     
                     for pdfImagePath in pdfImagePaths {
                         if let image = UIImage(contentsOfFile: pdfImagePath) {
