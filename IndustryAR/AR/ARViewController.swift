@@ -154,7 +154,7 @@ class ARViewController: UIViewController {
         return backButton
     }()
     
-    private lazy var shapeMenuButton: UIButton = {
+    public lazy var shapeMenuButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "menu"), for: .normal)
         button.addTarget(self, action: #selector(showShapeMenuView(sender:)), for: .touchUpInside)

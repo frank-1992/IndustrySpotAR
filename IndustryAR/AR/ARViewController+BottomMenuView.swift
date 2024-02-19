@@ -198,7 +198,7 @@ extension ARViewController {
             sender.tag = 201
             bottomMenuView.isHidden = false
             UIView.animate(withDuration: 0.3) {
-                sender.transform = CGAffineTransform(translationX: 600, y: 0)
+                self.bottomMenuButton.transform = CGAffineTransform(translationX: 600, y: 0)
                 self.bottomMenuView.transform = CGAffineTransform(translationX: 600, y: 0)
             } completion: { _ in
                 let anim = CABasicAnimation()
@@ -213,7 +213,7 @@ extension ARViewController {
             sender.tag = 200
             bottomMenuView.isHidden = true
             UIView.animate(withDuration: 0.3) {
-                sender.transform = CGAffineTransformIdentity
+                self.bottomMenuButton.transform = CGAffineTransformIdentity
                 self.bottomMenuView.transform = CGAffineTransformIdentity
             } completion: { _ in
                 let anim = CABasicAnimation()

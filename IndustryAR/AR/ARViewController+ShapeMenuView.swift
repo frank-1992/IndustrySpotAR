@@ -426,8 +426,7 @@ extension ARViewController {
         if sender.tag == 100 {
             sender.tag = 101
             UIView.animate(withDuration: 0.3) {
-//                 sender.transform = CGAffineTransform(translationX: -300, y: 0)
-                sender.frame = CGRect(x: sender.frame.origin.x - 300, y: sender.frame.origin.y, width: sender.frame.width, height: sender.frame.height)
+                self.shapeMenuButton.transform = CGAffineTransform(translationX: -300, y: 0)
                 self.shapeMenuView.transform = CGAffineTransform(translationX: -300, y: 0)
                 /*
                 if self.function != .delete {
@@ -440,8 +439,7 @@ extension ARViewController {
         } else {
             sender.tag = 100
             UIView.animate(withDuration: 0.3) {
-//                sender.transform = CGAffineTransformIdentity
-                sender.frame = CGRect(x: sender.frame.origin.x + 300, y: sender.frame.origin.y, width: sender.frame.width, height: sender.frame.height)
+                self.shapeMenuButton.transform = CGAffineTransformIdentity
                 self.shapeMenuView.transform = CGAffineTransformIdentity
             } completion: { _ in
             }
