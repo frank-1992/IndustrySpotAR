@@ -17,6 +17,7 @@ class SCNRingNode: SCNNode {
         circleNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         circleNode.renderingOrder = 100
         addChildNode(circleNode)
+        self.name = "SCNRingNode"
     }
     
     required init?(coder: NSCoder) {

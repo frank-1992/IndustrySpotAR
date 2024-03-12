@@ -149,6 +149,8 @@
 		F033BCA829AB23E400625BAC /* HistoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F033BCA729AB23E400625BAC /* HistoryModel.swift */; };
 		F05962B82B58D90E00A0325F /* SpotPropertyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05962B72B58D90E00A0325F /* SpotPropertyView.swift */; };
 		F05962BA2B58E10C00A0325F /* InspectSummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05962B92B58E10C00A0325F /* InspectSummaryView.swift */; };
+		F05B2AFE2B9EF48700C54ABE /* NodeTreeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F05B2AFD2B9EF48700C54ABE /* NodeTreeTableViewCell.swift */; };
+		F07CE04E2BA0302D0060FE30 /* ARViewController+NodeTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F07CE04D2BA0302D0060FE30 /* ARViewController+NodeTree.swift */; };
 		F09929292B57C25F00557291 /* PDFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09929282B57C25F00557291 /* PDFView.swift */; };
 		F099292B2B57CBE700557291 /* PDFTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F099292A2B57CBE700557291 /* PDFTableViewCell.swift */; };
 		F0B06C962B46ADD2004EF9E0 /* SCNSpotFlagNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */; };
@@ -315,6 +317,8 @@
 		F033BCA729AB23E400625BAC /* HistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryModel.swift; sourceTree = "<group>"; };
 		F05962B72B58D90E00A0325F /* SpotPropertyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPropertyView.swift; sourceTree = "<group>"; };
 		F05962B92B58E10C00A0325F /* InspectSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectSummaryView.swift; sourceTree = "<group>"; };
+		F05B2AFD2B9EF48700C54ABE /* NodeTreeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeTreeTableViewCell.swift; sourceTree = "<group>"; };
+		F07CE04D2BA0302D0060FE30 /* ARViewController+NodeTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ARViewController+NodeTree.swift"; sourceTree = "<group>"; };
 		F09929282B57C25F00557291 /* PDFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFView.swift; sourceTree = "<group>"; };
 		F099292A2B57CBE700557291 /* PDFTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFTableViewCell.swift; sourceTree = "<group>"; };
 		F0B06C952B46ADD2004EF9E0 /* SCNSpotFlagNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCNSpotFlagNode.swift; sourceTree = "<group>"; };
@@ -387,6 +391,7 @@
 				F099292A2B57CBE700557291 /* PDFTableViewCell.swift */,
 				F05962B72B58D90E00A0325F /* SpotPropertyView.swift */,
 				F05962B92B58E10C00A0325F /* InspectSummaryView.swift */,
+				F05B2AFD2B9EF48700C54ABE /* NodeTreeTableViewCell.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -518,6 +523,7 @@
 				05C4168F29EFEAB500F904A7 /* ARViewController+Gesture.swift */,
 				05C4169029EFEAB500F904A7 /* ARViewController+Recorder.swift */,
 				05C4168E29EFEAB500F904A7 /* ARViewController+ShapeMenuView.swift */,
+				F07CE04D2BA0302D0060FE30 /* ARViewController+NodeTree.swift */,
 				05F1827A29B1AB4100EB4CA4 /* CVPixelBuffer+Extensions.swift */,
 				05C4169629EFEAC400F904A7 /* Download */,
 				F033BC33299BDADC00625BAC /* RecorderResultViewController.swift */,
@@ -1069,6 +1075,7 @@
 				F033BC7A299FDD6A00625BAC /* SceneModel.swift in Sources */,
 				CEDF542B29ADA9B500C5AC95 /* ShapeSetting.swift in Sources */,
 				CECCE9322968197D0098B299 /* AssetModel.swift in Sources */,
+				F07CE04E2BA0302D0060FE30 /* ARViewController+NodeTree.swift in Sources */,
 				CE509C98298E32410081346C /* SphereNodesManager.swift in Sources */,
 				F033BC7C299FE93D00625BAC /* JsonUtil.swift in Sources */,
 				CECCCEFD296817800098B299 /* ARFileManager.swift in Sources */,
@@ -1097,6 +1104,7 @@
 				F033BC9E29A4FEEE00625BAC /* SCNLineNode.swift in Sources */,
 				F033BC22299BD06600625BAC /* UnfairAtomic.swift in Sources */,
 				05C4169429EFEAB500F904A7 /* ARViewController+Gesture.swift in Sources */,
+				F05B2AFE2B9EF48700C54ABE /* NodeTreeTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

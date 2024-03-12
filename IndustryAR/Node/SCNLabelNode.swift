@@ -87,7 +87,7 @@ class SCNLabelNode: SCNNode {
         textNode.geometry?.firstMaterial?.writesToDepthBuffer = false
         textNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         textNode.renderingOrder = 101
-        textNode.name = "spotLabelPanel\(text)"
+        textNode.name = "spotLabelPanel-\(text)"
  
         //*******************************************************
         // パネルノードの生成
@@ -119,7 +119,7 @@ class SCNLabelNode: SCNNode {
         panelNode.geometry?.firstMaterial?.writesToDepthBuffer = false
         panelNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         panelNode.renderingOrder = 100
-        panelNode.name = "spotLabelPanel\(text)"
+        panelNode.name = "spotLabelPanel-\(text)"
         
         addChildNode(textNode)
         addChildNode(panelNode)
@@ -137,13 +137,13 @@ class SCNLabelNode: SCNNode {
         circleNode.geometry?.firstMaterial?.readsFromDepthBuffer = false
         circleNode.geometry?.materials.first?.diffuse.contents = UIColor.black
         circleNode.renderingOrder = 102
-        circleNode.name = "spotLabelPanel\(text)"
+        circleNode.name = "spotLabelPanel-\(text)"
         self.circleNode = circleNode
         panelNode.addChildNode(circleNode)
         
         self.selected = false
         
-        self.name = "spotLabelPanel\(text)"
+        self.name = "spotLabelPanel-\(text)"
     }
     
     required init?(coder: NSCoder) {

@@ -55,5 +55,7 @@ class Circle: SCNNode {
         planeNode.renderingOrder = 101
         addChildNode(planeNode)
         planeNode.isHidden = true
+        
+//        self.name = "Circle"
     }
 }

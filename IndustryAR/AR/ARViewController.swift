@@ -36,6 +36,40 @@ class ARViewController: UIViewController {
     //** Variable-----------------------------------------------------------------------------visionLibSDK
     // Variable for VisionLib SDK Objective-C interface
     //var visionLibSDK: vlSDK?
+    var rootTreeNode: SCNNode!
+    
+    public lazy var tableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .plain)
+        tableView.layer.cornerRadius = 8
+        tableView.layer.masksToBounds = true
+        tableView.backgroundColor = .clear
+        tableView.showsVerticalScrollIndicator = false
+        tableView.showsHorizontalScrollIndicator = false
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(NodeTreeTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(NodeTreeTableViewCell.self))
+        tableView.backgroundColor = UIColor.clear
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        tableView.backgroundView = blurEffectView
+        return tableView
+    }()
+    
+    public lazy var leftSideArrow: UIView = {
+        let arrow = UIView()
+        arrow.backgroundColor = .clear
+        arrow.layer.cornerRadius = 20
+        arrow.layer.masksToBounds = true
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = arrow.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight] // 自动调整大小
+        arrow.addSubview(blurEffectView)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(nodeListVisiablility(_:)))
+        arrow.addGestureRecognizer(tap)
+        arrow.tag = 10000
+        return arrow
+    }()
     
     var scene: SCNScene?
     var cameraNode: SCNNode?
@@ -237,25 +271,74 @@ class ARViewController: UIViewController {
     var textGeometry: SCNGeometry?
     
     // SCNNode-----Circle
-    var circleNodes: [Circle] = [Circle]()
+    var circleNodes: [Circle] = [Circle]() {
+        didSet {
+            for (index, circle) in circleNodes.enumerated() {
+                let name = "Circle" + "\(index)"
+                circle.name = name
+            }
+        }
+    }
     
     // SCNNode-----Square
-    var squareNodes: [Square] = [Square]()
+    var squareNodes: [Square] = [Square]() {
+        didSet {
+            for (index, square) in squareNodes.enumerated() {
+                let name = "Square" + "\(index)"
+                square.name = name
+            }
+        }
+    }
     
     // SCNNode-----Triangle
-    var triangleNodes: [Triangle] = [Triangle]()
+    var triangleNodes: [Triangle] = [Triangle]() {
+        didSet {
+            for (index, triangle) in triangleNodes.enumerated() {
+                let name = "Triangle" + "\(index)"
+                triangle.name = name
+            }
+        }
+    }
 
     // SCNNode-----Text
-    var textNodes: [SCNTextNode] = [SCNTextNode]()
+    var textNodes: [SCNTextNode] = [SCNTextNode]() {
+        didSet {
+            for (index, textNode) in textNodes.enumerated() {
+                let name = "SCNTextNode" + "\(index)"
+                textNode.name = name
+            }
+        }
+    }
 
     // SCNNode-----Line
-    var lineNodes: [SCNLineNode] = [SCNLineNode]()
+    var lineNodes: [SCNLineNode] = [SCNLineNode]() {
+        didSet {
+            for (index, lineNode) in lineNodes.enumerated() {
+                let name = "SCNLineNode" + "\(index)"
+                lineNode.name = name
+            }
+        }
+    }
     
     // spotLabelNodes
-    var spotLabelNodes: [SCNLabelNode] = [SCNLabelNode]()
+    var spotLabelNodes: [SCNLabelNode] = [SCNLabelNode]() {
+        didSet {
+            for (index, spotLabelNode) in spotLabelNodes.enumerated() {
+                let name = "SCNSpotFlagNode" + "\(index)"
+                spotLabelNode.name = name
+            }
+        }
+    }
     
     // spotflag cylinderNodes
-    var spotFlagNodes: [SCNSpotFlagNode] = [SCNSpotFlagNode]()
+    var spotFlagNodes: [SCNSpotFlagNode] = [SCNSpotFlagNode]() {
+        didSet {
+            for (index, spotFlagNode) in spotFlagNodes.enumerated() {
+                let name = "SCNSpotFlagNode" + "\(index)"
+                spotFlagNode.name = name
+            }
+        }
+    }
     
     // selectedSpotLabelNodes
     var selectedSpotLabelNodes: [SCNLabelNode] = [SCNLabelNode]()
@@ -279,7 +362,14 @@ class ARViewController: UIViewController {
     var screenshotPaths: [String] = []
     
     // uninspected ringNodes
-    var ringNodes: [SCNNode] = [SCNNode]()
+    var ringNodes: [SCNNode] = [SCNNode]() {
+        didSet {
+            for (index, ringNode) in ringNodes.enumerated() {
+                let name = "ringNode" + "\(index)"
+                ringNode.name = name
+            }
+        }
+    }
     
     var removedOcclusion: Bool = true
     
@@ -455,6 +545,26 @@ class ARViewController: UIViewController {
         setupUI()
         sceneView.isPlaying = true;
         setupRecorder()
+        
+        if let rootNode = scene?.rootNode {
+            rootTreeNode = rootNode
+            rootTreeNode.name = "Root"
+        }
+        
+        view.addSubview(tableView)
+        tableView.snp.makeConstraints { make in
+            make.right.equalTo(view.snp.left)
+            make.top.equalTo(view).offset(100)
+            make.width.equalTo(260)
+            make.bottom.equalTo(bottomMenuView.snp.top).offset(-30)
+        }
+        
+        view.insertSubview(leftSideArrow, belowSubview: tableView)
+        leftSideArrow.snp.makeConstraints { make in
+            make.centerY.equalTo(tableView)
+            make.left.equalTo(tableView.snp.right).offset(-20)
+            make.size.equalTo(CGSize(width: 40, height: 100))
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -473,53 +583,6 @@ class ARViewController: UIViewController {
     }
     
     func resetTracking() {
-
-        /*
-        if self.removedOcclusion {
-            
-            let configuration = ARWorldTrackingConfiguration()
-            configuration.planeDetection = [.horizontal, .vertical]
-            configuration.isLightEstimationEnabled = true
-            configuration.environmentTexturing = .automatic
-            
-            switch configuration.frameSemantics {
-            case [.sceneDepth]:
-                configuration.frameSemantics.remove(.sceneDepth)
-            default:
-                configuration.frameSemantics.insert(.sceneDepth)
-            }
-            
-            self.sceneView.session.run(configuration, options: [.resetSceneReconstruction])
-            
-            self.configuration = configuration
-            
-            self.shapeMenuView.resetOcclusionTitleState(title: insert_occlusion.localizedString())
-            
-        } else {
-
-            let configuration = ARWorldTrackingConfiguration()
-            configuration.planeDetection = [.horizontal, .vertical]
-            configuration.isLightEstimationEnabled = true
-            configuration.environmentTexturing = .automatic
-                            
-            switch configuration.frameSemantics {
-            case [.sceneDepth]:
-                configuration.frameSemantics.remove(.sceneDepth)
-            default:
-                configuration.frameSemantics.insert(.sceneDepth)
-            }
-            
-            if ARWorldTrackingConfiguration.supportsSceneReconstruction(.mesh) {
-                configuration.sceneReconstruction = .mesh
-            }
-            self.sceneView.session.run(configuration, options: [.resetSceneReconstruction])
-            
-            self.configuration = configuration
-            
-            self.shapeMenuView.resetOcclusionTitleState(title: remove_occlusion.localizedString())
-            
-        }
-        */
         
     }
     
@@ -736,28 +799,6 @@ class ARViewController: UIViewController {
             }
         }
         
-        // save marker names
-        for (index, circle) in circleNodes.enumerated() {
-            let name = "circle" + "\(index)"
-            circle.name = name
-        }
-        for (index, square) in squareNodes.enumerated() {
-            let name = "square" + "\(index)"
-            square.name = name
-        }
-        for (index, triangle) in triangleNodes.enumerated() {
-            let name = "triangle" + "\(index)"
-            triangle.name = name
-        }
-        for (index, textNode) in textNodes.enumerated() {
-            let name = "text" + "\(index)"
-            textNode.name = name
-        }
-        for (index, lineNode) in lineNodes.enumerated() {
-            let name = "line" + "\(index)"
-            lineNode.name = name
-        }
-        
         let fileURL = dirURL.appendingPathComponent(fileName + ".scn")
         sceneView.scene!.write(to: fileURL, options: nil, delegate: nil, progressHandler: nil)
         // auto show
@@ -901,27 +942,27 @@ class ARViewController: UIViewController {
                                     self.markerRoot = markerRoot
                                     for childNode in markerRoot.childNodes {
                                         if let marker = childNode.name {
-                                            if marker.contains("circle") {
+                                            if marker.contains("Circle") {
                                                 if let childNode = childNode as? Circle {
                                                     circleNodes.append(childNode)
                                                 }
                                             }
-                                            if marker.contains("square") {
+                                            if marker.contains("Square") {
                                                 if let childNode = childNode as? Square {
                                                     squareNodes.append(childNode)
                                                 }
                                             }
-                                            if marker.contains("triangle") {
+                                            if marker.contains("Triangle") {
                                                 if let childNode = childNode as? Triangle {
                                                     triangleNodes.append(childNode)
                                                 }
                                             }
-                                            if marker.contains("text") {
+                                            if marker.contains("SCNTextNode") {
                                                 if let childNode = childNode as? SCNTextNode {
                                                     textNodes.append(childNode)
                                                 }
                                             }
-                                            if marker.contains("line") {
+                                            if marker.contains("SCNLineNode") {
                                                 if let childNode = childNode as? SCNLineNode {
                                                     lineNodes.append(childNode)
                                                 }
