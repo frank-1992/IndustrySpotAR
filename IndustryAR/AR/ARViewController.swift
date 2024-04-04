@@ -38,13 +38,24 @@ class ARViewController: UIViewController {
     //var visionLibSDK: vlSDK?
     var rootTreeNode: SCNNode!
     
+    public lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView(frame: .zero)
+        scrollView.backgroundColor = .clear
+        scrollView.bounces = false
+        scrollView.showsHorizontalScrollIndicator = true
+        scrollView.showsVerticalScrollIndicator = false
+        return scrollView
+    }()
+    
+    var nodeTreeWidth: CGFloat = 350
+    var currentTableViewWidth: CGFloat = 350
     public lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .plain)
         tableView.layer.cornerRadius = 8
         tableView.layer.masksToBounds = true
         tableView.backgroundColor = .clear
-        tableView.showsVerticalScrollIndicator = false
-        tableView.showsHorizontalScrollIndicator = false
+        tableView.showsVerticalScrollIndicator = true
+        tableView.showsHorizontalScrollIndicator = true
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(NodeTreeTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(NodeTreeTableViewCell.self))
@@ -52,8 +63,13 @@ class ARViewController: UIViewController {
         let blurEffect = UIBlurEffect(style: .light)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         tableView.backgroundView = blurEffectView
+//        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
+//        tableView.addGestureRecognizer(longPressGesture)
         return tableView
     }()
+    
+    var additionalView: UIView?
+    var arrowImageView: UIImageView?
     
     public lazy var leftSideArrow: UIView = {
         let arrow = UIView()
@@ -324,7 +340,7 @@ class ARViewController: UIViewController {
     var spotLabelNodes: [SCNLabelNode] = [SCNLabelNode]() {
         didSet {
             for (index, spotLabelNode) in spotLabelNodes.enumerated() {
-                let name = "SCNSpotFlagNode" + "\(index)"
+                let name = "SCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNode" + "\(index)"
                 spotLabelNode.name = name
             }
         }
@@ -551,18 +567,17 @@ class ARViewController: UIViewController {
             rootTreeNode.name = "Root"
         }
         
-        view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.right.equalTo(view.snp.left)
-            make.top.equalTo(view).offset(100)
-            make.width.equalTo(260)
-            make.bottom.equalTo(bottomMenuView.snp.top).offset(-30)
-        }
+        view.addSubview(scrollView)
+        scrollView.frame = CGRect(x: -350, y: 90, width: 350, height: self.view.frame.height - 180)
         
-        view.insertSubview(leftSideArrow, belowSubview: tableView)
+        scrollView.addSubview(tableView)
+        tableView.frame = CGRect(x: 0, y: 0, width: 350, height: self.view.frame.height - 180)
+        scrollView.contentSize = tableView.bounds.size
+        
+        view.insertSubview(leftSideArrow, belowSubview: scrollView)
         leftSideArrow.snp.makeConstraints { make in
-            make.centerY.equalTo(tableView)
-            make.left.equalTo(tableView.snp.right).offset(-20)
+            make.centerY.equalTo(scrollView)
+            make.left.equalTo(scrollView.snp.right).offset(-20)
             make.size.equalTo(CGSize(width: 40, height: 100))
         }
     }
@@ -1076,6 +1091,10 @@ class ARViewController: UIViewController {
         model.unshowAlignRoot()
         
         model.setupStreamLine()
+        
+        if model.name == nil || model.name == "" {
+            model.name = "AR Model"
+        }
         
         //model.name = "VirtualObject"
         if(cadModelRoot == nil) {

@@ -6,13 +6,18 @@
 //
 
 import UIKit
+import SceneKit
 
 class NodeTreeTableViewCell: UITableViewCell {
 
     var nodeVisibilityClosure: ((Bool) -> Void)?
     
-    private lazy var selection: UIButton = {
-        let button = UIButton()
+    var titleContent: String? {
+        return titleLabel.text
+    }
+    
+    public lazy var selection: CheckboxButton = {
+        let button = CheckboxButton()
         button.setImage(UIImage(named: "checkbox"), for: .normal)
         button.setImage(UIImage(named: "checkboxchecked"), for: .selected)
         button.isSelected = true
@@ -20,7 +25,7 @@ class NodeTreeTableViewCell: UITableViewCell {
         return button
     }()
     
-    private lazy var title: UILabel = {
+    public lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .black
         label.font = UIFont.systemFont(ofSize: 14)
@@ -53,8 +58,8 @@ class NodeTreeTableViewCell: UITableViewCell {
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
-        contentView.addSubview(title)
-        title.snp.makeConstraints { make in
+        contentView.addSubview(titleLabel)
+        titleLabel.snp.makeConstraints { make in
             make.left.equalTo(selection.snp.right).offset(20)
             make.centerY.equalTo(contentView)
         }
@@ -73,14 +78,18 @@ class NodeTreeTableViewCell: UITableViewCell {
         nodeVisibilityClosure?(sender.isSelected)
     }
     
-    func configUIWith(text: String?, hasChildren: Bool) {
-        title.text = text
+    func configUIWith(text: String?, hasChildren: Bool, nodeLevel: Int = 0) {
+        titleLabel.text = text
         if hasChildren {
-            title.textColor = .systemBlue
+            titleLabel.textColor = .systemBlue
         } else {
-            title.textColor = .black
+            titleLabel.textColor = .black
         }
         arrow.isHidden = !hasChildren
+        
+        selection.snp.updateConstraints { make in
+            make.left.equalTo(contentView).offset(10 + nodeLevel * 8) // Adjust left margin based on node level
+        }
     }
     
     func setArrowDirection(isExpand: Bool) {
@@ -90,5 +99,11 @@ class NodeTreeTableViewCell: UITableViewCell {
             arrow.image = UIImage(named: "expand_more")
         }
     }
+}
 
+class CheckboxButton: UIButton {
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        let newBounds = self.bounds.insetBy(dx: -20, dy: -20)
+        return newBounds.contains(point)
+    }
 }
