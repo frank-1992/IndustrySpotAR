@@ -340,7 +340,7 @@ class ARViewController: UIViewController {
     var spotLabelNodes: [SCNLabelNode] = [SCNLabelNode]() {
         didSet {
             for (index, spotLabelNode) in spotLabelNodes.enumerated() {
-                let name = "SCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNodeSCNSpotFlagNode" + "\(index)"
+                let name = "SCNSpotFlagNode" + "\(index)"
                 spotLabelNode.name = name
             }
         }
@@ -576,6 +576,20 @@ class ARViewController: UIViewController {
         
         view.insertSubview(leftSideArrow, belowSubview: scrollView)
         leftSideArrow.snp.makeConstraints { make in
+            make.centerY.equalTo(scrollView)
+            make.left.equalTo(scrollView.snp.right).offset(-20)
+            make.size.equalTo(CGSize(width: 40, height: 100))
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        scrollView.frame = CGRect(x: scrollView.frame.origin.x, y: 90, width: 350, height: self.view.frame.height - 180)
+        
+        tableView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: self.view.frame.height - 180)
+        
+        leftSideArrow.snp.updateConstraints { make in
             make.centerY.equalTo(scrollView)
             make.left.equalTo(scrollView.snp.right).offset(-20)
             make.size.equalTo(CGSize(width: 40, height: 100))
