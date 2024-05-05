@@ -8,6 +8,8 @@
 import UIKit
 import SceneKit
 
+let unitMargin: Int = 16
+
 class NodeTreeTableViewCell: UITableViewCell {
 
     var nodeVisibilityClosure: ((Bool) -> Void)?
@@ -88,7 +90,7 @@ class NodeTreeTableViewCell: UITableViewCell {
         arrow.isHidden = !hasChildren
         
         selection.snp.updateConstraints { make in
-            make.left.equalTo(contentView).offset(10 + nodeLevel * 8) // Adjust left margin based on node level
+            make.left.equalTo(contentView).offset(10 + nodeLevel * unitMargin) // Adjust left margin based on node level
         }
     }
     

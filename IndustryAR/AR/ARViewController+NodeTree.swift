@@ -74,7 +74,7 @@ extension ARViewController: UITableViewDataSource, UITableViewDelegate {
         // 计算文本宽度
         let size = attributedString.size()
         let textWidth = size.width
-        let margin: CGFloat = CGFloat(10 + nodeLevel * 8)
+        let margin: CGFloat = CGFloat(10 + nodeLevel * unitMargin)
         let calculateWith: CGFloat = textWidth + margin + 80
         if calculateWith > currentTableViewWidth {
             self.tableView.frame = CGRect(x: 0, y: 0, width: calculateWith, height: self.view.frame.height - 180)
