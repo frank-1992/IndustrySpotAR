@@ -73,7 +73,8 @@ class InspcetorView: UIView {
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.rowHeight = 44
-        tableView.isScrollEnabled = false
+        tableView.isScrollEnabled = true
+        tableView.bounces = false
         tableView.register(InspectorStatusTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(InspectorStatusTableViewCell.self))
         return tableView
     }()
@@ -139,9 +140,10 @@ class InspcetorView: UIView {
     }()
     
     var selectedSpots: [SpotWeld] = [SpotWeld]()
-    
-    init(frame: CGRect, selectedSpots: [SpotWeld]) {
+    var tableViewHeight: CGFloat = 0
+    init(frame: CGRect, selectedSpots: [SpotWeld], tableViewHeight: CGFloat) {
         self.selectedSpots = selectedSpots
+        self.tableViewHeight = tableViewHeight
         super.init(frame: frame)
         setupSubviews()
         setupGesture()
@@ -202,13 +204,13 @@ class InspcetorView: UIView {
         headView.snp.makeConstraints { make in
             make.left.equalTo(self).offset(4)
             make.right.equalTo(self).offset(-4)
-            make.top.equalTo(inspectorDateTitle.snp.bottom).offset(80)
+            make.top.equalTo(inspectorDateTitle.snp.bottom).offset(60)
             make.height.equalTo(44)
         }
         
         headView.addSubview(vLine)
         vLine.snp.makeConstraints { make in
-            make.left.equalTo(headView).offset(80)
+            make.left.equalTo(headView).offset(60)
             make.top.bottom.equalTo(headView)
             make.width.equalTo(2)
         }
@@ -229,7 +231,7 @@ class InspcetorView: UIView {
         tableView.snp.makeConstraints { make in
             make.left.right.equalTo(headView)
             make.top.equalTo(headView.snp.bottom)
-            make.height.equalTo(44 * selectedSpots.count)
+            make.height.equalTo(self.tableViewHeight)
         }
         
         addSubview(screenShotButton)
@@ -238,7 +240,6 @@ class InspcetorView: UIView {
             make.top.equalTo(tableView.snp.bottom).offset(40)
             make.width.equalTo(120)
             make.height.equalTo(50)
-            make.bottom.equalTo(self).offset(-20)
         }
         
         addSubview(saveButton)
@@ -250,11 +251,11 @@ class InspcetorView: UIView {
         }
     }
     
-    func updateInspectorViewWithSpotWeldModels(_ spotWeldModels: [SpotWeld]) {
+    func updateInspectorViewWithSpotWeldModels(_ spotWeldModels: [SpotWeld], tableViewHeight: CGFloat) {
         self.selectedSpots = spotWeldModels
         tableView.reloadData()
         tableView.snp.updateConstraints { make in
-            make.height.equalTo(44 * selectedSpots.count)
+            make.height.equalTo(tableViewHeight)
         }
     }
     

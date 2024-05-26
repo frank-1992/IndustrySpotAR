@@ -25,6 +25,14 @@ class PDFTableViewCell: UITableViewCell {
         return label
     }()
     
+    private lazy var autoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "x"
+        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 14)
+        return label
+    }()
+    
     private lazy var pointIDLabel: UILabel = {
         let label = UILabel()
         label.text = "76450001"
@@ -74,7 +82,7 @@ class PDFTableViewCell: UITableViewCell {
         backgroundColor = SSColorWithHex(0xc0ebd7, 1.0)
         
         let width = UIScreen.main.bounds.width - 100
-        let value = (width - 8 - 80 - 10) / 5
+        let value = (width - 8 - 80 - 10) / 6
         contentView.addSubview(number)
         number.snp.makeConstraints { make in
             make.left.equalTo(self).offset(20)
@@ -87,34 +95,46 @@ class PDFTableViewCell: UITableViewCell {
             make.left.equalTo(self).offset(80 + 2 + 4)
         }
         
+        contentView.addSubview(autoLabel)
+        autoLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.left.equalTo(self).offset(80 + 2 * 2 + value * 1 + 4)
+        }
+        
         contentView.addSubview(pointIDLabel)
         pointIDLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(self).offset(80 + 2 * 2 + value + 4)
+            make.left.equalTo(self).offset(80 + 2 * 3 + value * 2 + 4)
         }
         
         contentView.addSubview(partNo1Label)
         partNo1Label.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(self).offset(80 + 2 * 3 + value * 2 + 4)
+            make.left.equalTo(self).offset(80 + 2 * 4 + value * 3 + 4)
         }
         
         contentView.addSubview(partNo2Label)
         partNo2Label.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(self).offset(80 + 2 * 4 + value * 3 + 4)
+            make.left.equalTo(self).offset(80 + 2 * 5 + value * 4 + 4)
         }
         
         contentView.addSubview(partNo3Label)
         partNo3Label.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(self).offset(80 + 2 * 5 + value * 4 + 4)
+            make.left.equalTo(self).offset(80 + 2 * 6 + value * 5 + 4)
         }
     }
     
     func setupCell(with spotWeldModel: SpotWeld) {
         self.number.text = "\(spotWeldModel.labelNo)"
         self.statusLabel.text = spotWeldModel.status
+        if spotWeldModel.bAuto {
+            self.autoLabel.text = "o"
+        }
+        else {
+            self.autoLabel.text = "x"
+        }
         self.pointIDLabel.text = spotWeldModel.pointID
         if !spotWeldModel.partNumbers.isEmpty {
             self.partNo1Label.text = "\(spotWeldModel.partNumbers[0])"

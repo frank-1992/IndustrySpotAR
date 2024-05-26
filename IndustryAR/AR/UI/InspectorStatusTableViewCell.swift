@@ -91,6 +91,23 @@ class InspectorStatusTableViewCell: UITableViewCell {
         return label
     }()
     
+    private lazy var autoButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(named: "checkbox"), for: .normal)
+        button.setImage(UIImage(named: "checkboxchecked"), for: .selected)
+        button.tag = 1004
+        //button.addTarget(self, action: #selector(statusButtonAction(_:)), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var autoLabel: UILabel = {
+        let label = UILabel()
+        label.text = "Auto"
+        label.textColor = .black
+        label.font = UIFont.systemFont(ofSize: 18)
+        return label
+    }()
+    
     private lazy var vLine: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -127,13 +144,13 @@ class InspectorStatusTableViewCell: UITableViewCell {
         
         contentView.addSubview(number)
         number.snp.makeConstraints { make in
-            make.left.equalTo(self).offset(20)
+            make.left.equalTo(self).offset(10)
             make.centerY.equalTo(self)
         }
         
         contentView.addSubview(vLine)
         vLine.snp.makeConstraints { make in
-            make.left.equalTo(self).offset(80)
+            make.left.equalTo(self).offset(60)
             make.top.bottom.equalTo(self)
             make.width.equalTo(2)
         }
@@ -141,7 +158,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
         contentView.addSubview(okButton)
         okButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(vLine.snp.right).offset(18)
+            make.left.equalTo(vLine.snp.right).offset(15)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
@@ -154,7 +171,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
         contentView.addSubview(ngButton)
         ngButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(okLabel.snp.right).offset(25)
+            make.left.equalTo(okLabel.snp.right).offset(15)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
@@ -167,7 +184,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
         contentView.addSubview(pendingButton)
         pendingButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(ngLabel.snp.right).offset(25)
+            make.left.equalTo(ngLabel.snp.right).offset(15)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
@@ -180,7 +197,7 @@ class InspectorStatusTableViewCell: UITableViewCell {
         contentView.addSubview(unInspectedButton)
         unInspectedButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(pendingLabel.snp.right).offset(25)
+            make.left.equalTo(pendingLabel.snp.right).offset(15)
             make.size.equalTo(CGSize(width: 20, height: 20))
         }
         
@@ -190,10 +207,23 @@ class InspectorStatusTableViewCell: UITableViewCell {
             make.left.equalTo(unInspectedButton.snp.right).offset(4)
         }
         
+        contentView.addSubview(autoButton)
+        autoButton.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.left.equalTo(unInspectedLabel.snp.right).offset(15)
+            make.size.equalTo(CGSize(width: 20, height: 20))
+        }
+        
+        contentView.addSubview(autoLabel)
+        autoLabel.snp.makeConstraints { make in
+            make.centerY.equalTo(self)
+            make.left.equalTo(autoButton.snp.right).offset(4)
+        }
+        
         contentView.addSubview(detailButton)
         detailButton.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(unInspectedLabel.snp.right).offset(25)
+            make.left.equalTo(autoLabel.snp.right).offset(10)
             make.width.equalTo(60)
             make.height.equalTo(30)
         }
@@ -205,16 +235,32 @@ class InspectorStatusTableViewCell: UITableViewCell {
         self.number.text = "\(spotWeldModel.labelNo)"
         if spotWeldModel.status == "OK" {
             okButton.isSelected = true
+            ngButton.isSelected = false
+            pendingButton.isSelected = false
+            unInspectedButton.isSelected = false
             previousSelectedButton = okButton
         } else if spotWeldModel.status == "NG" {
+            okButton.isSelected = false
             ngButton.isSelected = true
+            pendingButton.isSelected = false
+            unInspectedButton.isSelected = false
             previousSelectedButton = ngButton
         } else if spotWeldModel.status == "Pending" {
+            okButton.isSelected = false
+            ngButton.isSelected = false
             pendingButton.isSelected = true
+            unInspectedButton.isSelected = false
             previousSelectedButton = pendingButton
         } else if spotWeldModel.status == "Uninspected" {
+            okButton.isSelected = false
+            ngButton.isSelected = false
+            pendingButton.isSelected = false
             unInspectedButton.isSelected = true
             previousSelectedButton = unInspectedButton
+        }
+        
+        if spotWeldModel.bAuto {
+            autoButton.isSelected = true
         }
     }
     
@@ -248,6 +294,8 @@ class InspectorStatusTableViewCell: UITableViewCell {
         } else if sender.tag == 1003 {
             // uninspected
             spotWeldModel?.status = "Uninspected"
+        } else if sender.tag == 1004 {
+            spotWeldModel?.bAuto = !(spotWeldModel!.bAuto)
         } else {
             spotWeldModel?.status = "Uninspected"
         }

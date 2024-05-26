@@ -9,7 +9,6 @@ import UIKit
 import SceneKit
 
 let unitMargin: Int = 16
-
 class NodeTreeTableViewCell: UITableViewCell {
 
     var nodeVisibilityClosure: ((Bool) -> Void)?

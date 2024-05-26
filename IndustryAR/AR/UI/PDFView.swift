@@ -81,6 +81,20 @@ class PDFView: UIView {
         return view
     }()
     
+    private lazy var autoTitle: UILabel = {
+        let label = UILabel()
+        label.text = "Auto"
+        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+        label.textColor = .white
+        return label
+    }()
+    
+    private lazy var vLine3: UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        return view
+    }()
+    
     private lazy var pointIDTitle: UILabel = {
         let label = UILabel()
         label.text = "PointID"
@@ -89,7 +103,7 @@ class PDFView: UIView {
         return label
     }()
     
-    private lazy var vLine3: UIView = {
+    private lazy var vLine4: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         return view
@@ -103,7 +117,7 @@ class PDFView: UIView {
         return label
     }()
     
-    private lazy var vLine4: UIView = {
+    private lazy var vLine5: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         return view
@@ -117,7 +131,7 @@ class PDFView: UIView {
         return label
     }()
     
-    private lazy var vLine5: UIView = {
+    private lazy var vLine6: UIView = {
         let view = UIView()
         view.backgroundColor = .white
         return view
@@ -139,28 +153,22 @@ class PDFView: UIView {
         return view
     }()
     
-    private lazy var screenshotView: UIImageView = {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
-    
     var selectedSpots: [SpotWeld] = [SpotWeld]()
     
     private var currentWidth: CGFloat = 0
-        
-    init(frame: CGRect, selectedSpots: [SpotWeld], width: CGFloat, inspector: String, time: String, image: UIImage?) {
+    
+    init(frame: CGRect, selectedSpots: [SpotWeld], width: CGFloat, inspector: String, time: String) {
         self.selectedSpots = selectedSpots
         self.currentWidth = width
         super.init(frame: frame)
-        setupSubviews(inspector: inspector, time: time, image: image)
+        setupSubviews(inspector: inspector, time: time)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setupSubviews(inspector: String, time: String, image: UIImage?) {
+    private func setupSubviews(inspector: String, time: String) {
         layer.cornerRadius = 8
         layer.masksToBounds = true
         
@@ -215,7 +223,7 @@ class PDFView: UIView {
             make.height.equalTo(44 * selectedSpots.count)
         }
         
-        let value = (self.currentWidth - 8 - 80 - 10) / 5
+        let value = (self.currentWidth - 8 - 80 - 10) / 6
         
         addSubview(vLine)
         vLine.snp.makeConstraints { make in
@@ -257,54 +265,52 @@ class PDFView: UIView {
             make.width.equalTo(2)
         }
         
+        addSubview(vLine6)
+        vLine6.snp.makeConstraints { make in
+            make.left.equalTo(headView).offset(value * 5 + 80 + 2)
+            make.top.equalTo(headView)
+            make.height.equalTo(44 * selectedSpots.count + 44)
+            make.width.equalTo(2)
+        }
+        
         headView.addSubview(statusTitle)
         statusTitle.snp.makeConstraints { make in
             make.left.equalTo(vLine.snp.right).offset(14)
             make.centerY.equalTo(noTitle)
         }
         
+        headView.addSubview(autoTitle)
+        autoTitle.snp.makeConstraints { make in
+            make.left.equalTo(vLine2.snp.right).offset(14)
+            make.centerY.equalTo(noTitle)
+        }
+        
         headView.addSubview(pointIDTitle)
         pointIDTitle.snp.makeConstraints { make in
-            make.left.equalTo(vLine2.snp.right).offset(14)
+            make.left.equalTo(vLine3.snp.right).offset(14)
             make.centerY.equalTo(noTitle)
         }
         
         headView.addSubview(partNo1Title)
         partNo1Title.snp.makeConstraints { make in
-            make.left.equalTo(vLine3.snp.right).offset(14)
+            make.left.equalTo(vLine4.snp.right).offset(14)
             make.centerY.equalTo(noTitle)
         }
         
         headView.addSubview(partNo2Title)
         partNo2Title.snp.makeConstraints { make in
-            make.left.equalTo(vLine4.snp.right).offset(14)
+            make.left.equalTo(vLine5.snp.right).offset(14)
             make.centerY.equalTo(noTitle)
         }
         
         headView.addSubview(partNo3Title)
         partNo3Title.snp.makeConstraints { make in
-            make.left.equalTo(vLine5.snp.right).offset(14)
+            make.left.equalTo(vLine6.snp.right).offset(14)
             make.centerY.equalTo(noTitle)
-        }
-        
-        headView.addSubview(partNo1Title)
-        partNo1Title.snp.makeConstraints { make in
-            make.left.equalTo(vLine3.snp.right).offset(14)
-            make.centerY.equalTo(noTitle)
-        }
-        
-        addSubview(screenshotView)
-        screenshotView.snp.makeConstraints { make in
-            make.left.equalTo(self).offset(100)
-            make.right.equalTo(self).offset(-100)
-            make.top.equalTo(tableView.snp.bottom).offset(10)
-            make.bottom.equalTo(self).offset(-40)
         }
         
         inspectorTitle.text = "Inspector: \(inspector)"
         inspectorDateTitle.text = "Inspect Date: \(time)"
-
-        screenshotView.image = image
     }
 }
 

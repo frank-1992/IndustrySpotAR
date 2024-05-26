@@ -21,9 +21,10 @@ public class SpotWeld: Codable {
     var weldPoint: SCNVector3 = SCNVector3Zero
     var weldNormal: SCNVector3 = SCNVector3Zero
     var partNumbers: [String] = []
+    var bAuto: Bool = false
     
     private enum CodingKeys: String, CodingKey {
-        case labelNo, status, pointID, weldPoint, weldNormal, partNumbers
+        case labelNo, status, pointID, weldPoint, weldNormal, partNumbers, bAuto
     }
     
     public required init() {
@@ -42,6 +43,7 @@ public class SpotWeld: Codable {
         weldNormal = SCNVector3(weldNormalArray[0], weldNormalArray[1], weldNormalArray[2])
         
         partNumbers = try container.decode([String].self, forKey: .partNumbers)
+        bAuto = try container.decode(Bool.self, forKey: .bAuto)
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -57,6 +59,7 @@ public class SpotWeld: Codable {
         try container.encode(weldNormalArray, forKey: .weldNormal)
         
         try container.encode(partNumbers, forKey: .partNumbers)
+        try container.encode(bAuto, forKey: .bAuto)
     }
 }
 

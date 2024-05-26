@@ -307,27 +307,32 @@ extension ARViewController {
     
     
     func showInspectorDialog() {
+        var height: CGFloat = CGFloat(44 * selectedSpots.count)
+        var n: Int = selectedSpots.count
+        if height > (UIScreen.main.bounds.height - 354) {
+            n = Int(UIScreen.main.bounds.height - 354) / 44
+            height = CGFloat(n * 44)
+        }
+        
         let viewWidth: CGFloat = 600
-        let viewHeight: CGFloat = CGFloat(354 + 44 * selectedSpots.count)
+        let viewHeight: CGFloat = CGFloat(354 + height)
         let centerX = UIScreen.main.bounds.width / 2
         let centerY = UIScreen.main.bounds.height / 2
         let originX = centerX - viewWidth / 2
         let originY = centerY - viewHeight / 2
         if let inspcetorView = inspcetorView {
-//            inspcetorView.snp.updateConstraints { make in
-//                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
-//            }
             inspcetorView.frame = CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight)
-            inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots)
+            inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots, tableViewHeight: height)
         } else {
-            let inspectorView = InspcetorView(frame: CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight), selectedSpots: selectedSpots)
+            var testArray = selectedSpots
+            for i in 0..<4 {
+                for spot in selectedSpots {
+                    testArray.append(spot)
+                }
+            }
+            let inspectorView = InspcetorView(frame: CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight), selectedSpots: testArray, tableViewHeight: height)
             view.addSubview(inspectorView)
             self.inspcetorView = inspectorView
-            
-//            inspectorView.snp.makeConstraints { make in
-//                make.center.equalTo(view)
-//                make.size.equalTo(CGSize(width: 600, height: 354 + 44 * selectedSpots.count))
-//            }
         }
         
         for spotLabelNode in self.selectedSpotLabelNodes {
@@ -391,9 +396,8 @@ extension ARViewController {
             }
         }
         
-        inspcetorView?.saveSpotWeldJson = { [weak self, weak inspcetorView] inspectorName, time in
+        inspcetorView?.saveSpotWeldJson = { [weak self] inspectorName, time in
             guard let self = self,
-                  let inspcetorView = inspcetorView,
                   let assetModel = assetModel else {
                 return
             }
@@ -401,23 +405,6 @@ extension ARViewController {
                 if let index = self.spotWeldList.firstIndex(where: { $0.labelNo == selectedSpot.labelNo }) {
                     self.spotWeldList[index] = selectedSpot
                 }
-            }
-            
-            // pdf
-            var image: UIImage?
-            if let firstScreenshot = self.screenshotPaths.first {
-                image = UIImage(contentsOfFile: firstScreenshot)
-            }
-            
-            let width = self.view.bounds.width
-            let pdfView = PDFView(frame: .zero, selectedSpots: self.selectedSpots, width: width - 100, inspector: inspectorName, time: time, image: image)
-            inspcetorView.addSubview(pdfView)
-            
-            pdfView.snp.makeConstraints { make in
-                make.centerX.equalTo(inspcetorView)
-                make.bottom.equalTo(inspcetorView.snp.top)
-                make.width.equalTo(Int(width) - 100)
-                make.height.equalTo(800 + 44 * self.selectedSpots.count)
             }
             
             // name and number
@@ -441,19 +428,17 @@ extension ARViewController {
                 if let pdfFileURL = pdfFileURL {
                     var pdfImagePaths = self.screenshotPaths
                     var pdfImages: [UIImage] = []
-                    if !pdfImagePaths.isEmpty {
-                        pdfImagePaths.remove(at: 0)
-                    }
-                    
                     for pdfImagePath in pdfImagePaths {
                         if let image = UIImage(contentsOfFile: pdfImagePath) {
                             pdfImages.append(image)
                         }
                     }
-                    
-                    ARFileManager.shared.createPDF(from: pdfView, withImages: pdfImages, inspectorName: inspectorName, date: time, saveTo: pdfFileURL) { isSuccess in
+                    ARFileManager.shared.createPDF(withImages: pdfImages,
+                                                   selectedSpots: self.selectedSpots,
+                                                   inspectorName: inspectorName,
+                                                   date: time,
+                                                   saveTo: pdfFileURL) { isSuccess in
                         DispatchQueue.main.async {
-                            pdfView.removeFromSuperview()
                             if isSuccess {
                                 ProgressHUD.succeed(save_success.localizedString(), delay: 1.0)
                             } else {

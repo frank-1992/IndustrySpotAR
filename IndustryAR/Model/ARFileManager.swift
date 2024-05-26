@@ -254,30 +254,57 @@ class ARFileManager: NSObject {
         return requiredSize
     }
     
-    public func createPDF(from view: UIView,
-                          withImages images: [UIImage]?,
+    public func createPDF(withImages images: [UIImage]?,
+                          selectedSpots: [SpotWeld]?,
                           inspectorName: String,
                           date: String,
                           saveTo fileURL: URL,
                           completion: @escaping (_ isSuccess: Bool) -> Void) {
-        let renderer = UIGraphicsPDFRenderer(bounds: view.bounds)
+        let pageSize = CGSize(width: UIScreen.main.bounds.width - 100, height: 792)
+        let targetRect = CGRect(x: 0, y: 0, width: pageSize.width, height: pageSize.height)
+        var pdfViews: [PDFView] = []
+        let renderer = UIGraphicsPDFRenderer(bounds: targetRect)
             do {
                 try renderer.writePDF(to: fileURL) { context in
-                    context.beginPage()
-                    view.layer.render(in: context.cgContext)
-
-                    // number
-                    if let images = images {
-                        let numberOut = "1/\(images.count + 1)"
-                        let numberOutFont = UIFont.systemFont(ofSize: 14)
-                        let numberOutAttributes: [NSAttributedString.Key: Any] = [.font: numberOutFont, .foregroundColor: UIColor.black]
-                        let numberOutSize = self.getStringSize(text: numberOut, font: numberOutFont)
-                        let numberOutRect = CGRect(x: view.bounds.width - 20 - numberOutSize.width, y: view.bounds.height - 20 - numberOutSize.height, width: numberOutSize.width, height: numberOutSize.height)
-                        let nsNumber = NSString(string: numberOut)
-                        nsNumber.draw(in: numberOutRect, withAttributes: numberOutAttributes)
+                    var currentPageCount: Int = 0
+                    if let selectedSpots = selectedSpots {
+                        let perPageCount = 20
+                        let pageCount: Int = Int(ceil((Double(selectedSpots.count) / 1.0) / Double(perPageCount)))
+                        currentPageCount = pageCount
+                        var pageSpots: [[SpotWeld]] = []
+                        for i in 0..<pageCount {
+                            var currentPageSpots: [SpotWeld] = []
+                            let startIndex = i * perPageCount
+                            let endIndex = min((i + 1) * perPageCount, selectedSpots.count)
+                            for j in startIndex..<endIndex {
+                                // 添加当前页的数据
+                                currentPageSpots.append(selectedSpots[j])
+                            }
+                            // 添加当前页的数据数组到总数组中
+                            pageSpots.append(currentPageSpots)
+                            
+                            context.beginPage()
+                            let container = UIView(frame: context.pdfContextBounds)
+                            container.backgroundColor = SSColorWithHex(0xf0fcff, 1)
+                            container.layer.render(in: context.cgContext)
+                            // number
+                            let number = "\(i+1)"
+                            let numberFont = UIFont.systemFont(ofSize: 14)
+                            let numberAttributes: [NSAttributedString.Key: Any] = [.font: numberFont, .foregroundColor: UIColor.black]
+                            let numberSize = self.getStringSize(text: number, font: numberFont)
+                            let numberRect = CGRect(x: targetRect.width - 20 - numberSize.width, y: targetRect.height - 20 - numberSize.height, width: numberSize.width, height: numberSize.height)
+                            let nsNumber = NSString(string: number)
+                            nsNumber.draw(in: numberRect, withAttributes: numberAttributes)
+                            
+                            // 设置其他内容
+                            let pdfRect = CGRect(x: -5000, y: -5000, width: pageSize.width, height: pageSize.height - 100)
+                            let pdfView = PDFView(frame: pdfRect, selectedSpots: pageSpots[0], width: targetRect.width, inspector: inspectorName, time: date)
+                            UIApplication.shared.keyWindow?.addSubview(pdfView)
+                            pdfView.layer.render(in: context.cgContext)
+                            pdfViews.append(pdfView)
+                        }
                     }
                     
-                        
                     if let images = images {
                         for (index, image) in images.enumerated() {
                             context.beginPage()
@@ -292,7 +319,7 @@ class ARFileManager: NSObject {
                             let font = UIFont.systemFont(ofSize: 24, weight: .medium)
                             let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.black]
                             let titleSize = getStringSize(text: title, font: font)
-                            let titleRect = CGRect(x: view.bounds.width / 2 - titleSize.width / 2, y: 20, width: titleSize.width, height: titleSize.height)
+                            let titleRect = CGRect(x: targetRect.width / 2 - titleSize.width / 2, y: 20, width: titleSize.width, height: titleSize.height)
                             let nsTitle = NSString(string: title)
                             nsTitle.draw(in: titleRect, withAttributes: attributes)
                             
@@ -309,7 +336,7 @@ class ARFileManager: NSObject {
                             let dateFont = UIFont.systemFont(ofSize: 20, weight: .regular)
                             let dateAttributes: [NSAttributedString.Key: Any] = [.font: dateFont, .foregroundColor: UIColor.black]
                             let dateSize = self.getStringSize(text: date, font: dateFont)
-                            let dateRect = CGRect(x: view.bounds.width - 20 - dateSize.width, y: 20 + 20 + dateSize.height, width: dateSize.width, height: dateSize.height)
+                            let dateRect = CGRect(x: targetRect.width - 20 - dateSize.width, y: 20 + 20 + dateSize.height, width: dateSize.width, height: dateSize.height)
                             let nsDate = NSString(string: date)
                             nsDate.draw(in: dateRect, withAttributes: dateAttributes)
 
@@ -319,21 +346,24 @@ class ARFileManager: NSObject {
                             let contextHeight =  context.pdfContextBounds.height - imageY - 60
                             let contextWidth = contextHeight * ratio
                             
-                            let imageRect = CGRect(x: (view.bounds.width - contextWidth) / 2, y: imageY, width: contextWidth, height: contextHeight)
+                            let imageRect = CGRect(x: (targetRect.width - contextWidth) / 2, y: imageY, width: contextWidth, height: contextHeight)
                             image.draw(in: imageRect)
                             
                             // number
-                            let number = "\(index + 2)/\(images.count + 1)"
+                            let number = "\(currentPageCount + index + 1)"
                             let numberFont = UIFont.systemFont(ofSize: 14)
                             let numberAttributes: [NSAttributedString.Key: Any] = [.font: numberFont, .foregroundColor: UIColor.black]
                             let numberSize = self.getStringSize(text: number, font: numberFont)
-                            let numberRect = CGRect(x: view.bounds.width - 20 - numberSize.width, y: view.bounds.height - 20 - numberSize.height, width: numberSize.width, height: numberSize.height)
+                            let numberRect = CGRect(x: targetRect.width - 20 - numberSize.width, y: targetRect.height - 20 - numberSize.height, width: numberSize.width, height: numberSize.height)
                             let nsNumber = NSString(string: number)
                             nsNumber.draw(in: numberRect, withAttributes: numberAttributes)
-                            
                         }
                     }
                 }
+                for view in pdfViews {
+                    view.removeFromSuperview()
+                }
+                pdfViews.removeAll()
                 completion(true)
                 print("PDF created successfully at: \(fileURL.relativePath)")
             } catch {
