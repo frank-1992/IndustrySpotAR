@@ -260,7 +260,7 @@ class ARFileManager: NSObject {
                           date: String,
                           saveTo fileURL: URL,
                           completion: @escaping (_ isSuccess: Bool) -> Void) {
-        let pageSize = CGSize(width: UIScreen.main.bounds.width - 100, height: 792)
+        let pageSize = CGSize(width: UIScreen.main.bounds.width - 100, height: 1000)
         let targetRect = CGRect(x: 0, y: 0, width: pageSize.width, height: pageSize.height)
         var pdfViews: [PDFView] = []
         let renderer = UIGraphicsPDFRenderer(bounds: targetRect)
@@ -268,7 +268,7 @@ class ARFileManager: NSObject {
                 try renderer.writePDF(to: fileURL) { context in
                     var currentPageCount: Int = 0
                     if let selectedSpots = selectedSpots {
-                        let perPageCount = 20
+                        let perPageCount = 15
                         let pageCount: Int = Int(ceil((Double(selectedSpots.count) / 1.0) / Double(perPageCount)))
                         currentPageCount = pageCount
                         var pageSpots: [[SpotWeld]] = []
@@ -298,7 +298,7 @@ class ARFileManager: NSObject {
                             
                             // 设置其他内容
                             let pdfRect = CGRect(x: -5000, y: -5000, width: pageSize.width, height: pageSize.height - 100)
-                            let pdfView = PDFView(frame: pdfRect, selectedSpots: pageSpots[0], width: targetRect.width, inspector: inspectorName, time: date)
+                            let pdfView = PDFView(frame: pdfRect, selectedSpots: pageSpots[i], width: targetRect.width, inspector: inspectorName, time: date)
                             UIApplication.shared.keyWindow?.addSubview(pdfView)
                             pdfView.layer.render(in: context.cgContext)
                             pdfViews.append(pdfView)

@@ -324,13 +324,7 @@ extension ARViewController {
             inspcetorView.frame = CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight)
             inspcetorView.updateInspectorViewWithSpotWeldModels(selectedSpots, tableViewHeight: height)
         } else {
-            var testArray = selectedSpots
-            for i in 0..<4 {
-                for spot in selectedSpots {
-                    testArray.append(spot)
-                }
-            }
-            let inspectorView = InspcetorView(frame: CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight), selectedSpots: testArray, tableViewHeight: height)
+            let inspectorView = InspcetorView(frame: CGRect(x: originX, y: originY, width: viewWidth, height: viewHeight), selectedSpots: selectedSpots, tableViewHeight: height)
             view.addSubview(inspectorView)
             self.inspcetorView = inspectorView
         }

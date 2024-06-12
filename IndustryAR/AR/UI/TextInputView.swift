@@ -21,6 +21,8 @@ class TextInputView: UIView {
         textField.layer.borderColor = UIColor.black.cgColor
         textField.placeholder = enter_text.localizedString()
         textField.textColor = .black
+        textField.returnKeyType = .done
+        textField.delegate = self
         return textField
     }()
     
@@ -93,5 +95,12 @@ class TextInputView: UIView {
             cancelClosure()
         }
         self.isHidden = true
+    }
+}
+
+extension TextInputView: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder() // 关闭键盘
+        return true
     }
 }

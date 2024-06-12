@@ -397,7 +397,7 @@ class ARViewController: UIViewController {
     @objc
     private func backButtonClicked() {
         if isSavedScene {
-            navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: false)
         } else {
             // show save tip window
             let alert = UIAlertController(title: save_window_tip.localizedString(), message: "", preferredStyle: UIAlertController.Style.alert)
@@ -405,7 +405,7 @@ class ARViewController: UIViewController {
             alert.addAction(UIAlertAction(title: cancel.localizedString(), style: UIAlertAction.Style.default, handler: { [weak self] _ in
                 guard let self = self else { return }
                 //cancel Action
-                self.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: false)
             }))
             alert.addAction(UIAlertAction(title: save.localizedString(),
                                           style: UIAlertAction.Style.default,
@@ -686,7 +686,7 @@ class ARViewController: UIViewController {
         recorder?.onlyRenderWhileRecording = false
         recorder?.contentMode = .aspectFit
         recorder?.enableAdjustEnvironmentLighting = true
-        recorder?.inputViewOrientations = [.portrait]
+        recorder?.inputViewOrientations = [.landscapeLeft, .landscapeRight, .portrait]
         recorder?.deleteCacheWhenExported = false
     }
     
@@ -836,7 +836,7 @@ class ARViewController: UIViewController {
         ProgressHUD.succeed(save_success.localizedString(), delay: 1)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if needBack {
-                self.navigationController?.popViewController(animated: true)
+                self.navigationController?.popViewController(animated: false)
             }
         }
     }

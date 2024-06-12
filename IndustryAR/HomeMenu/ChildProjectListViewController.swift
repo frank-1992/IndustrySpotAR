@@ -84,7 +84,7 @@ extension ChildProjectListViewController: UITableViewDelegate {
         
         coordinator.animate(alongsideTransition: { context in
             // Update tableView layout based on the new size
-            self.tableView.frame = self.view.bounds
+            self.tableView.frame = CGRect(origin: CGPointZero, size: size)
             self.tableView.reloadData()
         }, completion: nil)
     }
