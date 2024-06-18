@@ -59,6 +59,8 @@ class RecorderResultViewController: UIViewController {
         view.backgroundColor = .white
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor.white.cgColor
 
         definesPresentationContext = true
 

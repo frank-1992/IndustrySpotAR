@@ -11,8 +11,6 @@ import SceneKit
 import SnapKit
 import HandyJSON
 import ProgressHUD
-import ARVideoKit
-
 import SwiftUI
 
 let keyWindow = UIApplication.shared.connectedScenes
@@ -58,6 +56,7 @@ class ARViewController: UIViewController {
         tableView.showsHorizontalScrollIndicator = true
         tableView.dataSource = self
         tableView.delegate = self
+        tableView.rowHeight = 44
         tableView.register(NodeTreeTableViewCell.self, forCellReuseIdentifier: NSStringFromClass(NodeTreeTableViewCell.self))
         tableView.backgroundColor = UIColor.clear
         let blurEffect = UIBlurEffect(style: .light)
@@ -280,9 +279,7 @@ class ARViewController: UIViewController {
     var settingsVC: SettingsViewController?
     
     var isRecordingVideo: Bool = false
-    
-    var recorder: RecordAR?
-    
+        
     // SCNTetx
     var textGeometry: SCNGeometry?
     
@@ -432,7 +429,6 @@ class ARViewController: UIViewController {
         sceneView.removeFromSuperview()
         assetModel = nil
         historyModel = nil
-        recorder = nil
     }
     
     override func viewDidLoad() {
@@ -607,7 +603,6 @@ class ARViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.navigationBar.isHidden = false
         //ARSCNView_2023/08/23 ----- sceneView.session.pause()
-        recorder?.rest()
         releaseScene()
     }
     
@@ -677,17 +672,7 @@ class ARViewController: UIViewController {
     }
     
     private func setupRecorder() {
-//        sceneView.prepareForRecording()
-        //recorder = RecordAR(ARSceneKit: sceneView)
-        
-        recorder = RecordAR(SceneKit: sceneView)
-        
-        recorder?.delegate = self
-        recorder?.onlyRenderWhileRecording = false
-        recorder?.contentMode = .aspectFit
-        recorder?.enableAdjustEnvironmentLighting = true
-        recorder?.inputViewOrientations = [.landscapeLeft, .landscapeRight, .portrait]
-        recorder?.deleteCacheWhenExported = false
+        sceneView.prepareForRecording()
     }
     
     private func showSettingsVC() {
@@ -819,12 +804,14 @@ class ARViewController: UIViewController {
             print("createDirectory error:\(error)")
         }
         
-        setDeleteFlagHiddenState(isHidden: true) {
+        setDeleteFlagHiddenState(isHidden: true) { [weak self] in
+            guard let self = self else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                guard let photo = self.recorder?.photo() else { return }
-                let photoURL = dirURL.appendingPathComponent(fileName + ".png")
-                let imageData = photo.pngData()
-                try? imageData?.write(to: photoURL)
+                self.sceneView.takePhoto { photo in
+                    let photoURL = dirURL.appendingPathComponent(fileName + ".png")
+                    let imageData = photo.pngData()
+                    try? imageData?.write(to: photoURL)
+                }                
             }
         }
         

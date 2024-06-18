@@ -10,7 +10,6 @@ target 'IndustryAR' do
   pod 'ProgressHUD'
   pod 'PKHUD', '~> 5.0'
   pod 'HandyJSON'
-  pod 'ARVideoKit', '~> 1.5.51'
   pod 'Zip', '~> 2.1'
   pod 'MJRefresh'
   pod "Popover"

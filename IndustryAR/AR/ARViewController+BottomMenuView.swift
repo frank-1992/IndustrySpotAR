@@ -49,36 +49,62 @@ extension ARViewController {
         // take photo
         bottomMenuView.takePictureClosure = { [weak self]  in
             guard let self = self else { return }
-            let photo = self.recorder?.photo()
-            let controller = RecorderResultViewController(mediaType: .image(photo))
-            self.addChild(controller)
-            self.view.addSubview(controller.view)
-            controller.view.snp.makeConstraints { make in
-                make.center.equalTo(self.view)
-                make.width.equalTo(self.view.frame.width * 0.8)
-                make.height.equalTo(self.view.frame.height * 0.8)
+            var orientation: UIImage.Orientation?
+            switch UIDevice.current.orientation {
+            case .unknown:
+              orientation = .leftMirrored
+            case .portrait:
+              orientation = .leftMirrored
+            case .portraitUpsideDown:
+              orientation = .leftMirrored
+            case .landscapeLeft:
+              orientation = .up
+            case .landscapeRight:
+              orientation = .up
+            case .faceUp:
+              orientation = .up
+            case .faceDown:
+              orientation = .up
+            @unknown default:
+              orientation = .up
             }
-            // auto show
-            self.resetBottomMenuView()
+            sceneView.takePhotoResult(orientation: orientation) { result in
+                switch result {
+                case .success(let image):
+                    let controller = RecorderResultViewController(mediaType: .image(image))
+                    self.addChild(controller)
+                    self.view.addSubview(controller.view)
+                    controller.view.snp.makeConstraints { make in
+                        make.center.equalTo(self.view)
+                        make.width.equalTo(self.view.frame.width * 0.8)
+                        make.height.equalTo(self.view.frame.height * 0.8)
+                    }
+                    // auto show
+                    self.resetBottomMenuView()
+                case .failure(let error):
+                    print("error")
+                }
+            }
         }
         
         // record video
         bottomMenuView.recordVideoClosure = { [weak self]  in
             guard let self = self else { return }
             if !self.isRecordingVideo {
-                self.recorder?.record()
-                self.isRecordingVideo = true
-                self.bottomMenuView.startRecording()
+                do {
+                    try self.sceneView.startVideoRecording()
+                    self.isRecordingVideo = true
+                    self.bottomMenuView.startRecording()
+                } catch {
+                    print("Failed to start video recording: \(error.localizedDescription)")
+                }
             } else {
-                self.recorder?.stop() { path in
-                    DispatchQueue.main.sync {
-                        // auto show
+                self.sceneView.finishVideoRecording { info in
+                    DispatchQueue.main.async {
                         self.resetBottomMenuView()
-
                         self.isRecordingVideo = false
                         self.bottomMenuView.stopRecording()
-                        /* Process the captured video. Main thread. */
-                        let controller = RecorderResultViewController(mediaType: .video(path))
+                        let controller = RecorderResultViewController(mediaType: .video(info.url))
                         self.addChild(controller)
                         self.view.addSubview(controller.view)
                         controller.view.snp.makeConstraints { make in
