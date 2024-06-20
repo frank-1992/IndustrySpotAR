@@ -49,6 +49,9 @@ extension ARViewController {
         // take photo
         bottomMenuView.takePictureClosure = { [weak self]  in
             guard let self = self else { return }
+            
+            // 首次加载需要loading
+            
             var orientation: UIImage.Orientation?
             switch UIDevice.current.orientation {
             case .unknown:

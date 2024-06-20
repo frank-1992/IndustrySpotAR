@@ -556,7 +556,6 @@ class ARViewController: UIViewController {
         //loadARModel()
         setupUI()
         sceneView.isPlaying = true;
-        setupRecorder()
         
         if let rootNode = scene?.rootNode {
             rootTreeNode = rootNode
@@ -666,13 +665,9 @@ class ARViewController: UIViewController {
         setupShapeMenuView()
         setupGesture()
         setupBottomMenuView()
-        
+        sceneView.prepareForRecording()
         //init value
         ShapeSetting.isTrackingInformation = self.isTrackingInformation
-    }
-    
-    private func setupRecorder() {
-        sceneView.prepareForRecording()
     }
     
     private func showSettingsVC() {
