@@ -302,7 +302,6 @@
 		F0232CFF2C21D13800C43550 /* MTDMulticastDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTDMulticastDelegate.m; sourceTree = "<group>"; };
 		F0232D002C21D13800C43550 /* MTDOriginMulticastDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MTDOriginMulticastDelegate.m; sourceTree = "<group>"; };
 		F033BB91299A883400625BAC /* BottomMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomMenuView.swift; sourceTree = "<group>"; };
-		F033BC32299BD16900625BAC /* Recorder-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Recorder-Bridging-Header.h"; sourceTree = "<group>"; };
 		F033BC33299BDADC00625BAC /* RecorderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecorderResultViewController.swift; sourceTree = "<group>"; };
 		F033BC79299FDD6A00625BAC /* SceneModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneModel.swift; sourceTree = "<group>"; };
 		F033BC7B299FE93D00625BAC /* JsonUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JsonUtil.swift; sourceTree = "<group>"; };
@@ -313,6 +312,7 @@
 		F033BCA329A7A80A00625BAC /* SCNTextNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SCNTextNode.swift; sourceTree = "<group>"; };
 		F033BCA529A7BDA100625BAC /* SCNNode+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SCNNode+Extensions.swift"; sourceTree = "<group>"; };
 		F033BCA729AB23E400625BAC /* HistoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryModel.swift; sourceTree = "<group>"; };
+		F05025FA2C2829E400E8C5CE /* MulticastDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MulticastDelegate.h; sourceTree = "<group>"; };
 		F05962B72B58D90E00A0325F /* SpotPropertyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotPropertyView.swift; sourceTree = "<group>"; };
 		F05962B92B58E10C00A0325F /* InspectSummaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InspectSummaryView.swift; sourceTree = "<group>"; };
 		F05B2AFD2B9EF48700C54ABE /* NodeTreeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeTreeTableViewCell.swift; sourceTree = "<group>"; };
@@ -811,6 +811,7 @@
 		F0232CFC2C21D13800C43550 /* MulticastDelegate */ = {
 			isa = PBXGroup;
 			children = (
+				F05025FA2C2829E400E8C5CE /* MulticastDelegate.h */,
 				F0232CFD2C21D13800C43550 /* MTDMulticastDelegate.h */,
 				F0232CFE2C21D13800C43550 /* MTDOriginMulticastDelegate.h */,
 				F0232CFF2C21D13800C43550 /* MTDMulticastDelegate.m */,
@@ -823,7 +824,6 @@
 			isa = PBXGroup;
 			children = (
 				F0232CA62C21D13800C43550 /* Sources */,
-				F033BC32299BD16900625BAC /* Recorder-Bridging-Header.h */,
 			);
 			path = Recorder;
 			sourceTree = "<group>";

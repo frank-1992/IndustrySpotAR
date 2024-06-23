@@ -49,9 +49,6 @@ extension ARViewController {
         // take photo
         bottomMenuView.takePictureClosure = { [weak self]  in
             guard let self = self else { return }
-            
-            // 首次加载需要loading
-            
             var orientation: UIImage.Orientation?
             switch UIDevice.current.orientation {
             case .unknown:
@@ -84,7 +81,7 @@ extension ARViewController {
                     }
                     // auto show
                     self.resetBottomMenuView()
-                case .failure(let error):
+                case .failure(_):
                     print("error")
                 }
             }
@@ -449,7 +446,7 @@ extension ARViewController {
             // save pdf
             Task {
                 if let pdfFileURL = pdfFileURL {
-                    var pdfImagePaths = self.screenshotPaths
+                    let pdfImagePaths = self.screenshotPaths
                     var pdfImages: [UIImage] = []
                     for pdfImagePath in pdfImagePaths {
                         if let image = UIImage(contentsOfFile: pdfImagePath) {
