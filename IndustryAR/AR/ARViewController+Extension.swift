@@ -9,7 +9,6 @@ import UIKit
 import ARKit
 import SceneKit
 import SnapKit
-import HandyJSON
 import ProgressHUD
 
 enum PickerViewType {

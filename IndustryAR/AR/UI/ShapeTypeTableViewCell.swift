@@ -66,7 +66,7 @@ class ShapeTypeTableViewCell: UITableViewCell {
         addSubview(nameLabel)
         nameLabel.snp.makeConstraints { make in
             make.centerY.equalTo(self)
-            make.left.equalTo(iconView.snp.right).offset(48)
+            make.left.equalTo(iconView.snp.right).offset(20)
         }
     }
     

@@ -9,9 +9,16 @@ target 'IndustryAR' do
   pod 'SnapKit'
   pod 'ProgressHUD'
   pod 'PKHUD', '~> 5.0'
-  pod 'HandyJSON'
   pod 'Zip', '~> 2.1'
   pod 'MJRefresh'
   pod "Popover"
+  
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      end
+    end
+  end
   
 end

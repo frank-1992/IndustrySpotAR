@@ -9,7 +9,6 @@ import UIKit
 import ARKit
 import SceneKit
 import SnapKit
-import HandyJSON
 import ProgressHUD
 import SwiftUI
 
@@ -802,11 +801,9 @@ class ARViewController: UIViewController {
         setDeleteFlagHiddenState(isHidden: true) { [weak self] in
             guard let self = self else { return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.sceneView.takePhoto { photo in
-                    let photoURL = dirURL.appendingPathComponent(fileName + ".png")
-                    let imageData = photo.pngData()
-                    try? imageData?.write(to: photoURL)
-                }                
+                let photoURL = dirURL.appendingPathComponent(fileName + ".png")
+                let imageData = self.sceneView.snapshot().pngData()
+                try? imageData?.write(to: photoURL)
             }
         }
         
